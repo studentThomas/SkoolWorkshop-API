@@ -84,7 +84,9 @@ const workshopController = {
   deleteWorkshop: (req, res, next) => {
     const workshopId = req.params.workshopId;
     const sqlCheck = `SELECT * FROM workshop WHERE id = ?`;
-    const sqlStatement = `DELETE FROM workshop WHERE id = ?`;
+    const sqlStatement = `DELETE workshop, stock FROM workshop 
+    LEFT JOIN stock ON workshop.id = stock.workshopId
+    WHERE workshop.id = ?`;
 
     pool.getConnection(function (err, conn) {
       if (err) {
