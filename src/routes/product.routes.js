@@ -1,12 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const productController = require("../controllers/product.controller");
+const productController = require('../controllers/product.controller');
+const authController = require('../controllers/auth.controller');
 
 router.use(express.json());
 
-router.post("/product", productController.addProduct);
-router.get("/product/:workshopId", productController.getProducts);
-router.put("/product/:productId", productController.updateProduct);
-router.delete("/product/:productId", productController.deleteProduct);
+router.post('/product', productController.createProduct);
+router.get('/product/:workshopId', productController.getProducts);
+router.put('/product/:productId', productController.updateProduct);
+router.delete('/product/:productId', productController.deleteProduct);
 
 module.exports = router;
