@@ -2,7 +2,7 @@ const logger = require("../util/logger").logger;
 const pool = require("../util/mysql-db");
 
 const workshopController = {
-  addWorkshop: (req, res, next) => {
+  createWorkshop: (req, res, next) => {
     const workshop = req.body;
 
     const sqlCheck = `SELECT * FROM workshop WHERE name = ?`;

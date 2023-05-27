@@ -5,19 +5,10 @@ const chaiHttp = require("chai-http");
 const logger = require("../../src/util/logger").logger;
 const server = require("../../index");
 const dbconnection = require("../../src/util/mysql-db");
+const queries = require("../../src/util/queries");
 
 chai.should();
 chai.use(chaiHttp);
-
-const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
-const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
-const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE;
-
-const INSERT_STOCK =
-  "INSERT INTO `stock` (`productId`, `workshopId`, `quantity`) VALUES" +
-  '(1, 1, 10),' +
-  '(2, 1, 10)';
-
 
 describe("Stock API", () => {
   logger.info("Stock API test started");
@@ -28,7 +19,7 @@ describe("Stock API", () => {
         throw err;
       }
       connection.query(
-        CLEAR_DB + INSERT_STOCK,
+        queries.clearStockTable + queries.insertStock,
         (error, result) => {
           if (error) {
             done(error);

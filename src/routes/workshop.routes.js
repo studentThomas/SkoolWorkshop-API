@@ -5,7 +5,7 @@ const workshopController = require("../controllers/workshop.controller");
 router.use(express.json());
 
 //UC501
-router.post("/workshop", workshopController.addWorkshop);
+router.post("/workshop", workshopController.createWorkshop);
 
 //UC502
 router.get("/workshop", workshopController.getWorkshops);

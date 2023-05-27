@@ -5,24 +5,10 @@ const chaiHttp = require("chai-http");
 const logger = require("../../src/util/logger").logger;
 const server = require("../../index");
 const dbconnection = require("../../src/util/mysql-db");
+const queries = require("../../src/util/queries");
 
 chai.should();
 chai.use(chaiHttp);
-
-const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
-const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
-const CLEAR_WORKSHOP_TABLE = "DELETE IGNORE FROM `workshop`;";
-const CLEAR_PRODUCT_TABLE = "DELETE IGNORE FROM `product`;";
-const CLEAR_DB =
-  CLEAR_USER_TABLE +
-  CLEAR_STOCK_TABLE +
-  CLEAR_WORKSHOP_TABLE +
-  CLEAR_PRODUCT_TABLE;
-
-const INSERT_USER =
-  "INSERT INTO `user` (`id`, `emailAdress`, `password`, `firstname`, `phoneNumber` ) VALUES" +
-  '(1, "levikooy@gmail.com", "1234", "Levi", "0612345678"),' +
-  '(2, "thomas@gmail.com", "1234", "Thomas", "0612345678")';
 
 describe("User API", () => {
   logger.info("User API test started");
@@ -32,14 +18,17 @@ describe("User API", () => {
         done(err);
         throw err;
       }
-      connection.query(CLEAR_DB + INSERT_USER, (error, result) => {
-        if (error) {
-          done(error);
-          throw error;
+      connection.query(
+        queries.clearUserTable + queries.insertUser,
+        (error, result) => {
+          if (error) {
+            done(error);
+            throw error;
+          }
+          dbconnection.releaseConnection(connection);
+          done();
         }
-        dbconnection.releaseConnection(connection);
-        done();
-      });
+      );
     });
   });
 

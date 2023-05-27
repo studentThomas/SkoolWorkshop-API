@@ -5,20 +5,10 @@ const chaiHttp = require("chai-http");
 const logger = require("../../src/util/logger").logger;
 const server = require("../../index");
 const dbconnection = require("../../src/util/mysql-db");
+const queries = require("../../src/util/queries");
 
 chai.should();
 chai.use(chaiHttp);
-
-const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
-const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
-const CLEAR_WORKSHOP_TABLE = "DELETE IGNORE FROM `workshop`;";
-const CLEAR_PRODUCT_TABLE = "DELETE IGNORE FROM `product`;";
-const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE + CLEAR_WORKSHOP_TABLE + CLEAR_PRODUCT_TABLE;
-
-const INSERT_WORKSHOP =
-  "INSERT INTO `workshop` (`id`, `name`, `description`, `image`) VALUES" +
-  '(1, "workshop1", "description", "image"),' +
-  '(2, "workshop2", "description", "image")';
 
 describe("Workshop API", () => {
   logger.info("Stock API test started");
@@ -28,14 +18,17 @@ describe("Workshop API", () => {
         done(err);
         throw err;
       }
-      connection.query(CLEAR_DB + INSERT_WORKSHOP, (error, result) => {
-        if (error) {
-          done(error);
-          throw error;
+      connection.query(
+        queries.clearWorkshopTable + queries.insertWorkshop,
+        (error, result) => {
+          if (error) {
+            done(error);
+            throw error;
+          }
+          dbconnection.releaseConnection(connection);
+          done();
         }
-        dbconnection.releaseConnection(connection);
-        done();
-      });
+      );
     });
   });
   describe("UC-501 Add Workshop", () => {
