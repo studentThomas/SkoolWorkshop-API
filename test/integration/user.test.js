@@ -45,5 +45,13 @@ describe("User API", () => {
         phoneNumber: "0612345678",
       });
     });
+    it("TC-201-2 User already exists", (done) => {
+      chai.request(server).post("/api/user").send({
+        emailAdress: "levikooy@gmail.com",
+        password: "1234",
+        firstname: "Levi",
+        phoneNumber: "0612345678",
+      });
+    });
   });
 });
