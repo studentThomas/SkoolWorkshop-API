@@ -8,6 +8,17 @@ const authController = require('../controllers/auth.controller');
 router.use(express.json());
 router.use(cors());
 
+//UC401
+router.post("/product", productController.addProduct);
+
+//UC402
+router.get("/product/:workshopId", productController.getProducts);
+
+//UC403
+router.put("/product/:productId", productController.updateProduct);
+
+//UC404
+router.delete("/product/:productId", productController.deleteProduct);
 router.post('/product', productController.createProduct);
 router.get('/product/:workshopId', productController.getProducts);
 router.put('/product/:productId', productController.updateProduct);

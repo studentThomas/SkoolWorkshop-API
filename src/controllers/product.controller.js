@@ -2,6 +2,7 @@ const logger = require('../util/logger').logger;
 const pool = require('../util/mysql-db');
 
 const productController = {
+  //UC201
   createProduct: (req, res, next) => {
     const { workshopId, quantity, ...productData } = req.body;
 
@@ -63,6 +64,7 @@ const productController = {
     });
   },
 
+  //UC202
   getProducts: (req, res, next) => {
     const workshopId = req.params.workshopId;
     const sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?';
@@ -101,6 +103,7 @@ const productController = {
     });
   },
 
+  //UC203
   updateProduct: (req, res, next) => {
     const productId = req.params.productId;
     const updatedProduct = req.body;
@@ -125,6 +128,8 @@ const productController = {
 
         if (results.length == 0) {
           return next({
+            status: 404,
+            message: `Product not found`,
             status: 403,
             message: `Product not found`
           });
@@ -152,6 +157,7 @@ const productController = {
     });
   },
 
+  //UC204
   deleteProduct: (req, res, next) => {
     const productId = req.params.productId;
     const sqlCheck = `SELECT * FROM product WHERE id = ?`;
@@ -177,6 +183,8 @@ const productController = {
 
         if (results.length == 0) {
           return next({
+            status: 404,
+            message: `Product not found`,
             status: 403,
             message: `Product not found`
           });
