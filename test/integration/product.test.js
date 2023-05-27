@@ -17,7 +17,7 @@ const INSERT_PRODUCT =
   '(1, "spuitbus", "description", "code", "image"),' +
   '(2, "pencil", "description", "code", "image")';
 
-describe("Product API", () => {
+describe("Product API", () => { 
   logger.info("Product API test started");
   beforeEach((done) => {
     dbconnection.getConnection(function (err, connection) {

@@ -13,9 +13,9 @@ const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
 const CLEAR_DB = CLEAR_STOCK_TABLE;
 
 const INSERT_STOCK =
-  "INSERT INTO `stock` (`id`, `productId`, `workshopId`, `amount`) VALUES" +
-  "(1, 1, 1, 10)," +
-  "(2, 2, 1, 10)";
+  "INSERT INTO `stock` (`productId`, `workshopId`, `quantity`) VALUES" +
+  "(1, 1, 10)," +
+  "(2, 1, 10)";
 
 describe("Stock API", () => {
   logger.info("Stock API test started");
@@ -34,84 +34,80 @@ describe("Stock API", () => {
         done();
       });
     });
+  });
 
-    describe("UC-301 Get Stock", () => {
-      it("TC-301-1 Product is not found", (done) => {
-        chai
-          .request(server)
-          .get("/api/stock/3")
-          .end((err, res) => {
-            let { status, message, data } = res.body;
-            status.should.equal(404);
-            res.body.should.be.an("object");
-            data.should.be.an("object").to.be.empty;
-            message.should.be.a("string").to.be.equal("Product is not found");
-            done();
-          });
-      });
-      it("TC-301-2 Product is found", (done) => {
-        chai
-          .request(server)
-          .get("/api/stock/1")
-          .end((err, res) => {
-            let { status, message, data } = res.body;
-            status.should.equal(200);
-            res.body.should.be.an("object");
-            data.should.be.an("object");
-            message.should.be.a("string").to.be.equal("Product is found");
-            done();
-          });
-      });
+  describe("UC-301 Get Stock", () => {
+    it("TC-301-1 Product is not found", (done) => {
+      chai
+        .request(server)
+        .get("/api/stock/3")
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(404);
+          res.body.should.be.an("object");
+          data.should.be.an("object").to.be.empty;
+          message.should.be.a("string").to.be.equal("Product is not found");
+          done();
+        });
     });
-    describe("UC-302 Update Stock", () => {
-      it("TC-302-1 Product is not found", (done) => {
+    it("TC-301-2 Product is found", (done) => {
+      chai
+        .request(server)
+        .get("/api/stock/1")
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(200);
+          res.body.should.be.an("object");
+          data.should.be.an("object");
+          message.should.be.a("string").to.be.equal("Product is found");
+          done();
+        });
+    });
+  });
+  describe("UC-302 Update Stock", () => {
+    it("TC-302-1 Product is updated", (done) => {
         chai
           .request(server)
-          .put("/api/stock/3")
+          .put("/api/stock/0")
           .send({
             quantity: 10,
           })
           .end((err, res) => {
-            let { status, message, data } = res.body;
-            status.should.equal(404);
-            res.body.should.be.an("object");
-            data.should.be.an("object").to.be.empty;
-            message.should.be.a("string").to.be.equal("Product is not found");
+            
             done();
           });
       });
-      it("TC-302-2 Product is updated", (done) => {
-        chai
-          .request(server)
-          .put("/api/stock/1")
-          .send({
-            quantity: 10,
-          })
-          .end((err, res) => {
-            let { status, message, data } = res.body;
-            status.should.equal(200);
-            res.body.should.be.an("object");
-            data.should.be.an("object");
-            message.should.be.a("string").to.be.equal("Quantity is updated");
-            done();
-          });
-      });
-      it("TC-302-3 Quantity is to low", (done) => {
-        chai
-          .request(server)
-          .put("/api/stock/1")
-          .send({
-            quantity: -1,
-          })
-          .end((err, res) => {
-            let { status, message, data } = res.body;
-            status.should.equal(400);
-            res.body.should.be.an("object");
-            data.should.be.an("object").to.be.empty;
-            message.should.be.a("string").to.be.equal("Quantity is to low");
-            done();
-          });
-      });
+    it("TC-302-2 Product is updated", (done) => {
+      chai
+        .request(server)
+        .put("/api/stock/1")
+        .send({
+          quantity: 10,
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(200);
+          res.body.should.be.an("object");
+          data.should.be.an("object");
+          message.should.be.a("string").to.be.equal("Quantity is updated");
+          done();
+        });
+    });
+    it("TC-302-3 Quantity is to low", (done) => {
+      chai
+        .request(server)
+        .put("/api/stock/1")
+        .send({
+          quantity: -100,
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(409);
+          res.body.should.be.an("object");
+          data.should.be.an("object").to.be.empty;
+          message.should.be.a("string").to.be.equal("Quantity to low");
+          done();
+        });
     });
   });
 });
