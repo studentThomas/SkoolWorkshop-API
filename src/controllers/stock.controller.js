@@ -1,5 +1,6 @@
-const logger = require("../util/logger").logger;
-const pool = require("../util/mysql-db");
+const logger = require('../util/logger').logger;
+const pool = require('../util/mysql-db');
+const nodemailer = require('nodemailer');
 
 const stockController = {
   getStock: (req, res, next) => {
@@ -11,7 +12,7 @@ const stockController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -19,24 +20,24 @@ const stockController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length == 0) {
           return next({
             status: 404,
-            message: "Product is not found",
+            message: 'Product is not found'
           });
         }
 
         res.status(200).json({
           status: 200,
-          message: "Product is found",
+          message: 'Product is found',
           data: {
             productId: results[0].productId,
-            quantity: results[0].quantity,
-          },
+            quantity: results[0].quantity
+          }
         });
         pool.releaseConnection(conn);
       });
@@ -46,7 +47,17 @@ const stockController = {
   updateStock: (req, res, next) => {
     const productId = req.params.productId;
     let quantity = Number(req.body.quantity);
-    
+
+    let transporter = nodemailer.createTransport({
+      host: 'web05.ixlhosting.nl',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'thomas.vermeulen@uwcomputerstudent.nl',
+        pass: 'MacPower67!'
+      }
+    });
+
     const sqlCheck = `SELECT * FROM stock WHERE productId = ?`;
     const sqlStatement = `UPDATE stock SET quantity = ? WHERE productId = ?`;
     
@@ -54,7 +65,7 @@ const stockController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
       
@@ -62,7 +73,7 @@ const stockController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
         
@@ -79,11 +90,17 @@ const stockController = {
           quantity = results[0].quantity + quantity;
         }
 
+        if (results.length == 0) {
+          return next({
+            status: 409,
+            message: 'Product is not found'
+          });
+        }
 
         if (quantity < 0) {
           return next({
             status: 409,
-            message: "Quantity to low",
+            message: 'Quantity to low'
           });
         }
 
@@ -91,24 +108,55 @@ const stockController = {
           if (err) {
             return next({
               status: 409,
-              message: err.message,
+              message: err.message
             });
           }
 
           if (results) {
+            if (quantity < 5) {
+              const sqlProduct = `SELECT name FROM product WHERE id = ?`;
+
+              conn.query(sqlProduct, [productId], (error, productResults) => {
+                if (error) {
+                  return next({
+                    status: 409,
+                    message: error
+                  });
+                }
+
+                const productName = productResults[0].name;
+
+                const mailOptions = {
+                  from: 'twa.vermeulen@student.avans.nl',
+                  to: 'vermeulen.thomas@icloud.com',
+                  subject: `Low quantity "${productName}"`,
+                  text: `The quantity of product "${productName}" is low. Current quantity: ${quantity}`
+                };
+
+                // Send the email
+                transporter.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                    console.error('Error sending email:', error);
+                  } else {
+                    console.log('Email sent:', info.response);
+                  }
+                });
+              });
+            }
+
             res.status(200).json({
               status: 200,
-              message: "Quantity is updated",
+              message: 'Quantity is updated',
               data: {
-                quantity: quantity,
-              },
+                quantity: quantity
+              }
             });
           }
         });
         pool.releaseConnection(conn);
       });
     });
-  },
+  }
 };
 
 module.exports = stockController;
