@@ -45,7 +45,7 @@ describe("Stock API", () => {
     it("TC-301-1 Product is not found", (done) => {
       chai
         .request(server)
-        .get("/api/stock/3")
+        .get("/api/stock/0")
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(404);

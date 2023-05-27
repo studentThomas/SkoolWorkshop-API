@@ -154,7 +154,7 @@ describe("Product API", () => {
     it("TC-404-2 Product not found", (done) => {
       chai
         .request(server)
-        .delete("/api/product/3")
+        .delete("/api/product/0")
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(404);
