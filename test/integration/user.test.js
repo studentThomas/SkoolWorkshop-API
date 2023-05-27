@@ -10,7 +10,14 @@ chai.should();
 chai.use(chaiHttp);
 
 const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
-const CLEAR_DB = CLEAR_USER_TABLE;
+const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
+const CLEAR_WORKSHOP_TABLE = "DELETE IGNORE FROM `workshop`;";
+const CLEAR_PRODUCT_TABLE = "DELETE IGNORE FROM `product`;";
+const CLEAR_DB =
+  CLEAR_USER_TABLE +
+  CLEAR_STOCK_TABLE +
+  CLEAR_WORKSHOP_TABLE +
+  CLEAR_PRODUCT_TABLE;
 
 const INSERT_USER =
   "INSERT INTO `user` (`id`, `emailAdress`, `password`, `firstname`, `phoneNumber` ) VALUES" +

@@ -106,7 +106,7 @@ const workshopController = {
 
         if (results.length == 0) {
           return next({
-            status: 403,
+            status: 404,
             message: `Workshop not found`,
           });
         }

@@ -9,8 +9,10 @@ const dbconnection = require("../../src/util/mysql-db");
 chai.should();
 chai.use(chaiHttp);
 
+const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
+const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
 const CLEAR_PRODUCT_TABLE = "DELETE IGNORE FROM `product`;";
-const CLEAR_DB = CLEAR_PRODUCT_TABLE;
+const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE + CLEAR_PRODUCT_TABLE;
 
 const INSERT_PRODUCT =
   "INSERT INTO `product` (`id`, `name`, `description`, `code`, `image`) VALUES" +
@@ -118,7 +120,7 @@ describe("Product API", () => {
     it("TC-403-2 Product not found", (done) => {
       chai
         .request(server)
-        .put("/api/product/3")
+        .put("/api/product/0")
         .send({
           name: "laptop",
           description: "description",

@@ -9,13 +9,15 @@ const dbconnection = require("../../src/util/mysql-db");
 chai.should();
 chai.use(chaiHttp);
 
+const CLEAR_USER_TABLE = "DELETE IGNORE FROM `user`;";
 const CLEAR_STOCK_TABLE = "DELETE IGNORE FROM `stock`;";
-const CLEAR_DB = CLEAR_STOCK_TABLE;
+const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE;
 
 const INSERT_STOCK =
   "INSERT INTO `stock` (`productId`, `workshopId`, `quantity`) VALUES" +
-  "(1, 1, 10)," +
-  "(2, 1, 10)";
+  '(1, 1, 10),' +
+  '(2, 1, 10)';
+
 
 describe("Stock API", () => {
   logger.info("Stock API test started");
@@ -25,14 +27,17 @@ describe("Stock API", () => {
         done(err);
         throw err;
       }
-      connection.query(CLEAR_DB + INSERT_STOCK, (error, result) => {
-        if (error) {
-          done(error);
-          throw error;
+      connection.query(
+        CLEAR_DB + INSERT_STOCK,
+        (error, result) => {
+          if (error) {
+            done(error);
+            throw error;
+          }
+          dbconnection.releaseConnection(connection);
+          done();
         }
-        dbconnection.releaseConnection(connection);
-        done();
-      });
+      );
     });
   });
 
@@ -65,18 +70,22 @@ describe("Stock API", () => {
     });
   });
   describe("UC-302 Update Stock", () => {
-    it("TC-302-1 Product is updated", (done) => {
-        chai
-          .request(server)
-          .put("/api/stock/0")
-          .send({
-            quantity: 10,
-          })
-          .end((err, res) => {
-            
-            done();
-          });
-      });
+    it("TC-302-1 Product is not found", (done) => {
+      chai
+        .request(server)
+        .put("/api/stock/0")
+        .send({
+          quantity: 10,
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(409);
+          res.body.should.be.an("object");
+          data.should.be.an("object");
+          message.should.be.a("string").to.be.equal("Product is not found");
+          done();
+        });
+    });
     it("TC-302-2 Product is updated", (done) => {
       chai
         .request(server)
