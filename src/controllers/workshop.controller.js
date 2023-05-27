@@ -2,7 +2,7 @@ const logger = require("../util/logger").logger;
 const pool = require("../util/mysql-db");
 
 const workshopController = {
-  createWorkshop: (req, res, next) => {
+  addWorkshop: (req, res, next) => {
     const workshop = req.body;
 
     const sqlCheck = `SELECT * FROM workshop WHERE name = ?`;
@@ -44,7 +44,6 @@ const workshopController = {
               data: workshop,
             });
           });
-          pool.releaseConnection(conn);
         }
       });
     });
@@ -78,7 +77,6 @@ const workshopController = {
             data: results,
           });
         }
-        pool.releaseConnection(conn);
       });
     });
   },
@@ -86,9 +84,7 @@ const workshopController = {
   deleteWorkshop: (req, res, next) => {
     const workshopId = req.params.workshopId;
     const sqlCheck = `SELECT * FROM workshop WHERE id = ?`;
-    const sqlStatement = `DELETE workshop, stock FROM workshop 
-    LEFT JOIN stock ON workshop.id = stock.workshopId
-    WHERE workshop.id = ?`;
+    const sqlStatement = `DELETE FROM workshop WHERE id = ?`;
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -108,7 +104,7 @@ const workshopController = {
 
         if (results.length == 0) {
           return next({
-            status: 404,
+            status: 403,
             message: `Workshop not found`,
           });
         }
@@ -128,8 +124,9 @@ const workshopController = {
               data: {},
             });
           }
+
+          pool.releaseConnection(conn);
         });
-        pool.releaseConnection(conn);
       });
     });
   },

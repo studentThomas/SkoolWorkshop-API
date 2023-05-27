@@ -27,11 +27,13 @@ CREATE TABLE `product` (
 
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `emailAdress` varchar(200) NOT NULL,
+  `email` varchar(200) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `firstName` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `phoneNumber` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `FK_user_workshop` (`id`),
+  CONSTRAINT `FK_user_workshop` FOREIGN KEY (`id`) REFERENCES `workshop` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `stock` (

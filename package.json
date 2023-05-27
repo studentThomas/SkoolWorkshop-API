@@ -4,19 +4,15 @@
   "description": "This repository contains the source code of the SkoolWorkshop.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/index.js",
-    "test": "mocha test/**/*.test.js --exit"
+    "start": "nodemon ./src/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.3.2",
-    "nodemailer": "^6.9.2"
+    "mysql2": "^3.3.2"
   },
   "devDependencies": {
     "chai": "^4.3.7",
@@ -25,12 +21,5 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "tracer": "^1.1.6"
-  },
-  "prettier": {
-    "trailingComma": "none",
-    "printWidth": 200,
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": true
   }
 }
