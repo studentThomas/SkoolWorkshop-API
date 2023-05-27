@@ -38,6 +38,7 @@ const stockController = {
             quantity: results[0].quantity,
           },
         });
+        pool.releaseConnection(conn);
       });
     });
   },
@@ -104,6 +105,7 @@ const stockController = {
             });
           }
         });
+        pool.releaseConnection(conn);
       });
     });
   },

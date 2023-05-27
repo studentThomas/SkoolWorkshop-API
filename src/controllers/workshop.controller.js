@@ -44,6 +44,7 @@ const workshopController = {
               data: workshop,
             });
           });
+          pool.releaseConnection(conn);
         }
       });
     });
@@ -77,6 +78,7 @@ const workshopController = {
             data: results,
           });
         }
+        pool.releaseConnection(conn);
       });
     });
   },
@@ -126,9 +128,8 @@ const workshopController = {
               data: {},
             });
           }
-
-          pool.releaseConnection(conn);
         });
+        pool.releaseConnection(conn);
       });
     });
   },
