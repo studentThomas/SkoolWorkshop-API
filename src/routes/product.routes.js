@@ -7,7 +7,7 @@ router.use(express.json());
 router.use(cors());
 
 //UC401
-router.post("/product", productController.createProduct);
+router.post('/product', productController.createProduct);
 
 //UC402
 router.get('/product', productController.getProducts);
