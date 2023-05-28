@@ -1,5 +1,5 @@
-const logger = require("../util/logger").logger;
-const pool = require("../util/mysql-db");
+const logger = require('../util/logger').logger;
+const pool = require('../util/mysql-db');
 
 const workshopController = {
   createWorkshop: (req, res, next) => {
@@ -12,7 +12,7 @@ const workshopController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -20,28 +20,28 @@ const workshopController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length > 0) {
           return next({
             status: 403,
-            message: `Workshop already exists`,
+            message: `Workshop already exists`
           });
         } else {
           conn.query(sqlStatement, workshop, (error, results) => {
             if (error) {
               return next({
                 status: 409,
-                message: error,
+                message: error
               });
             }
 
             res.status(201).json({
               status: 201,
-              message: "Workshop created",
-              data: workshop,
+              message: 'Workshop created',
+              data: workshop
             });
           });
           pool.releaseConnection(conn);
@@ -51,31 +51,36 @@ const workshopController = {
   },
 
   getWorkshops: (req, res, next) => {
-    const workshopId = req.params.workshopId;
+    const categoryName = req.query.CategoryName;
+    let sqlStatement;
 
-    const sqlStatement = `SELECT * FROM workshop`;
+    if (categoryName) {
+      sqlStatement = 'SELECT * FROM workshop WHERE CategoryName = ?';
+    } else {
+      sqlStatement = 'SELECT * FROM workshop';
+    }
 
     pool.getConnection((err, conn) => {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
-      conn.query(sqlStatement, [workshopId], (error, results) => {
+      conn.query(sqlStatement, [categoryName], (error, results) => {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results) {
           res.status(200).json({
             status: 200,
-            message: "Workshops are retrieved",
-            data: results,
+            message: 'Workshops are retrieved',
+            data: results
           });
         }
         pool.releaseConnection(conn);
@@ -94,7 +99,7 @@ const workshopController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -102,14 +107,14 @@ const workshopController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length == 0) {
           return next({
             status: 404,
-            message: `Workshop not found`,
+            message: `Workshop not found`
           });
         }
 
@@ -117,7 +122,7 @@ const workshopController = {
           if (error) {
             return next({
               status: 409,
-              message: error,
+              message: error
             });
           }
 
@@ -125,14 +130,14 @@ const workshopController = {
             res.send({
               status: 200,
               message: `Workshop deleted`,
-              data: {},
+              data: {}
             });
           }
         });
         pool.releaseConnection(conn);
       });
     });
-  },
+  }
 };
 
 module.exports = workshopController;

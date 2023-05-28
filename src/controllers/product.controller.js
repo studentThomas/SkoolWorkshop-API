@@ -42,6 +42,8 @@ const productController = {
 
             const productId = resultProduct.insertId;
             const stockData = [productId, workshopId, quantity];
+            logger.info(`productId: ${productId}`);
+            logger.info(`stockData: ${stockData}`);
 
             conn.query(sqlStock, stockData, (error, resultStock) => {
               if (error) {
@@ -66,8 +68,14 @@ const productController = {
 
   //UC202
   getProducts: (req, res, next) => {
-    const workshopId = req.params.workshopId;
-    const sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?';
+    const workshopId = req.query.workshopId;
+    let sqlStatement;
+
+    if (workshopId) {
+      sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?';
+    } else {
+      sqlStatement = 'SELECT * FROM product';
+    }
 
     pool.getConnection(function (err, conn) {
       if (err) {
