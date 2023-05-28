@@ -11,7 +11,7 @@ router.use(cors());
 router.post('/product', productController.createProduct);
 
 //UC402
-router.get('/product/:workshopId', productController.getProducts);
+router.get('/product', productController.getProducts);
 
 //UC403
 router.put('/product/:productId', productController.updateProduct);
