@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `workshop` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
+  `CategoryName` varchar(200) NOT NULL,
   `description` varchar(400) NOT NULL,
   `image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
@@ -42,8 +43,8 @@ CREATE TABLE `stock` (
 
 -- Insert data
 INSERT INTO `workshop` VALUES 
-  (1, 'graffiti', 'description', 'URL'),
-  (2, 'dance', 'description', 'URL');
+  (1, 'graffiti', 'BeeldendeKunst', 'description', 'URL'),
+  (2, 'dance', 'Muziek', 'description', 'URL');
 
 INSERT INTO `product` VALUES 
   (1, 'spuitbus', 'description', 1234, 'URL'),
