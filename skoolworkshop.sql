@@ -1,8 +1,3 @@
-DELETE FROM `stock`;
-DELETE FROM `user`;
-DELETE FROM `workshop`;
-DELETE FROM `product`;
-
 DROP TABLE IF EXISTS `stock`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `workshop`;
