@@ -23,7 +23,7 @@ const INSERT_USER =
 const INSERT_WORKSHOP = 'INSERT INTO `workshop` (`id`, `name`, `description`, `image`) VALUES' + '(1, "workshop1", "description", "image"),' + '(2, "workshop2", "description", "image");';
 
 const INSERT_PRODUCT =
-  'INSERT INTO `product` (`id`, `name`, `description`, `code`, `image`) VALUES' + '(1, "spuitbus", "description", "code", "image"),' + '(2, "pencil", "description", "code", "image");';
+  'INSERT INTO `product` (`id`, `name`, `description`, `code`, `image`) VALUES' + '(1, "spuitbus", "description", 123456, "image"),' + '(2, "pencil", "description", 12345, "image");';
 
 const INSERT_STOCK = 'INSERT INTO `stock` (`productId`, `workshopId`, `quantity`) VALUES' + '(1, 1, 10),' + '(2, 1, 10);';
 
