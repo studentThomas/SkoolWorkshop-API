@@ -2,14 +2,12 @@ const express = require('express');
 const router = express.Router();
 const cors = require("cors");
 const productController = require("../controllers/product.controller");
-const productController = require('../controllers/product.controller');
-const authController = require('../controllers/auth.controller');
 
 router.use(express.json());
 router.use(cors());
 
 //UC401
-router.post("/product", productController.addProduct);
+router.post("/product", productController.createProduct);
 
 //UC402
 router.get("/product/:workshopId", productController.getProducts);
