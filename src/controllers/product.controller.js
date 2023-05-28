@@ -137,8 +137,6 @@ const productController = {
         if (results.length == 0) {
           return next({
             status: 404,
-            message: `Product not found`,
-            status: 403,
             message: `Product not found`
           });
         }
@@ -192,8 +190,6 @@ const productController = {
         if (results.length == 0) {
           return next({
             status: 404,
-            message: `Product not found`,
-            status: 403,
             message: `Product not found`
           });
         }
