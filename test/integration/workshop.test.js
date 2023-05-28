@@ -4,7 +4,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
-const dbconnection = require('../../src/util/mysql-db');
 
 chai.should();
 chai.use(chaiHttp);
@@ -17,9 +16,10 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          name: 'workshop1',
-          description: 'description',
-          image: 'image'
+          Name: 'workshop1',
+          Description: 'description',
+          CategoryName: 'Category1',
+          Image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -35,9 +35,10 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          name: 'workshop3',
-          description: 'description',
-          image: 'image'
+          Name: 'workshop3',
+          Description: 'description',
+          CategoryName: 'Category3',
+          Image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

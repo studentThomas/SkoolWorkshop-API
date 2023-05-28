@@ -16,16 +16,16 @@ const CLEAR_WORKSHOP_TABLE = 'DELETE IGNORE FROM `workshop`;';
 const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE + CLEAR_PRODUCT_TABLE + CLEAR_WORKSHOP_TABLE;
 
 const INSERT_USER =
-  'INSERT INTO `user` (`id`, `emailAdress`, `password`, `firstname`, `phoneNumber` ) VALUES' +
+  'INSERT INTO `user` (`Id`, `EmailAdress`, `Password`, `FirstName`, `PhoneNumber` ) VALUES' +
   '(1, "levikooy@gmail.com", "1234", "Levi", "0612345678"),' +
   '(2, "thomas@gmail.com", "1234", "Thomas", "0612345678");';
 
-const INSERT_WORKSHOP = 'INSERT INTO `workshop` (`id`, `name`, `description`, `image`) VALUES' + '(1, "workshop1", "description", "image"),' + '(2, "workshop2", "description", "image");';
+const INSERT_WORKSHOP = 'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Image`) VALUES' + '(1, "workshop1", "Category1", "description", "image"),' + '(2, "workshop2", "Category2", "description", "image");';
 
 const INSERT_PRODUCT =
-  'INSERT INTO `product` (`id`, `name`, `description`, `code`, `image`) VALUES' + '(1, "spuitbus", "description", 123456, "image"),' + '(2, "pencil", "description", 12345, "image");';
+  'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image`) VALUES' + '(1, "spuitbus", "description", 123456, "image"),' + '(2, "pencil", "description", 12345, "image");';
 
-const INSERT_STOCK = 'INSERT INTO `stock` (`productId`, `workshopId`, `quantity`) VALUES' + '(1, 1, 10),' + '(2, 1, 10);';
+const INSERT_STOCK = 'INSERT INTO `stock` (`ProductId`, `WorkshopId`, `Quantity`) VALUES' + '(1, 1, 10),' + '(2, 1, 10);';
 
 describe('Product API', () => {
   logger.info('Product API test started');
@@ -45,16 +45,19 @@ describe('Product API', () => {
       });
     });
   });
+  
   describe('UC-401 Add Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
         .request(server)
         .post('/api/product')
         .send({
-          name: 'spuitbus',
-          description: 'description',
-          code: 1234567,
-          image: 'image'
+          Name: 'spuitbus',
+          Description: 'description',
+          Code: 123456,
+          Image: 'image',
+          Quantity: 10,
+          WorkshopId: 1
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -70,12 +73,12 @@ describe('Product API', () => {
         .request(server)
         .post('/api/product')
         .send({
-          name: 'laptop',
-          description: 'description',
-          code: 12345,
-          image: 'image',
-          quantity: 10,
-          workshopId: 1
+          Name: 'laptop',
+          Description: 'description',
+          Code: 12345,
+          Image: 'image',
+          Quantity: 10,
+          WorkshopId: 1
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -92,7 +95,7 @@ describe('Product API', () => {
     it('TC-402-1 Products retrieved', (done) => {
       chai
         .request(server)
-        .get('/api/product/1')
+        .get('/api/product')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(200);
@@ -110,10 +113,10 @@ describe('Product API', () => {
         .request(server)
         .put('/api/product/1')
         .send({
-          name: 'laptop',
-          description: 'description',
-          code: 12345,
-          image: 'image'
+          Name: 'laptop',
+          Description: 'description',
+          Code: 12345,
+          Image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -129,10 +132,10 @@ describe('Product API', () => {
         .request(server)
         .put('/api/product/0')
         .send({
-          name: 'laptop',
-          description: 'description',
-          code: 'code',
-          image: 'image'
+          Name: 'laptop',
+          Description: 'description',
+          Code: 'code',
+          Image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

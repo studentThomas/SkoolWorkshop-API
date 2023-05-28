@@ -4,46 +4,47 @@ DROP TABLE IF EXISTS `workshop`;
 DROP TABLE IF EXISTS `product`;
 
 CREATE TABLE `workshop` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
-  `description` varchar(400) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(200) NOT NULL,
+  `CategoryName` varchar(200) NOT NULL,
+  `Description` varchar(400) NOT NULL,
+  `Image` varchar(255) NOT NULL,
+  PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `product` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
-  `description` varchar(400) NOT NULL,
-  `code` bigint,
-  `image` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(200) NOT NULL,
+  `Description` varchar(400) NOT NULL,
+  `Code` bigint,
+  `Image` varchar(255) NOT NULL,
+  PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `user` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `emailAdress` varchar(200) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `firstName` varchar(255) NOT NULL,
-  `phoneNumber` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `EmailAdress` varchar(200) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `FirstName` varchar(255) NOT NULL,
+  `PhoneNumber` varchar(255) NOT NULL,
+  PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `stock` (
-  `workshopId` int NOT NULL,
-  `productId` int NOT NULL,
-  `quantity` int NOT NULL,
-  PRIMARY KEY (`workshopId`, `productId`),
-  KEY `IDX_stock_workshop` (`workshopId`),
-  KEY `IDX_stock_product` (`productId`),
-  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`workshopId`) REFERENCES `workshop` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stock_product` FOREIGN KEY (`productId`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `WorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `Quantity` int NOT NULL,
+  PRIMARY KEY (`WorkshopId`, `ProductId`),
+  KEY `IDX_stock_workshop` (`WorkshopId`),
+  KEY `IDX_stock_product` (`ProductId`),
+  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Insert data
 INSERT INTO `workshop` VALUES 
-  (1, 'graffiti', 'description', 'URL'),
-  (2, 'dance', 'description', 'URL');
+  (1, 'graffiti', 'BeeldendeKunst', 'description', 'URL'),
+  (2, 'dance', 'Muziek', 'description', 'URL');
 
 INSERT INTO `product` VALUES 
   (1, 'spuitbus', 'description', 1234, 'URL'),

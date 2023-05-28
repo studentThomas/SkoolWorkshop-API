@@ -5,7 +5,7 @@ const userController = {
   createUser: (req, res, next) => {
     const user = req.body;
     const sqlStatement = `INSERT INTO user SET ?`;
-    const sqlCheck = `SELECT * FROM user WHERE emailAdress = ?`;
+    const sqlCheck = `SELECT * FROM user WHERE EmailAdress = ?`;
 
     pool.getConnection((err, conn) => {
       if (err) {
@@ -15,7 +15,7 @@ const userController = {
         });
       }
 
-      conn.query(sqlCheck, [user.emailAdress], (error, results) => {
+      conn.query(sqlCheck, [user.EmailAdress], (error, results) => {
         if (error) {
           next({
             status: 409,

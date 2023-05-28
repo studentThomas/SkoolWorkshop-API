@@ -4,7 +4,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
-const dbconnection = require('../../src/util/mysql-db');
 chai.should();
 chai.use(chaiHttp);
 
@@ -16,21 +15,20 @@ describe('User API', () => {
         .request(server)
         .post('/api/user')
         .send({
-          emailAdress: 'ivan@gmail.com',
-          password: '1234',
-          firstname: 'Ivan',
-          phoneNumber: '0612345678'
+          EmailAdress: 'ivan@gmail.com',
+          Password: '1234',
+          FirstName: 'Ivan',
+          PhoneNumber: '0612345678'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(201);
           res.body.should.be.an('object');
           data.should.be.an('object');
-          data.should.have.property('id');
-          data.should.have.property('emailAdress').to.be.equal('ivan@gmail.com');
-          data.should.have.property('password').to.be.equal('1234');
-          data.should.have.property('firstname').to.be.equal('Ivan');
-          data.should.have.property('phoneNumber').to.be.equal('0612345678');
+          data.should.have.property('EmailAdress').to.be.equal('ivan@gmail.com');
+          data.should.have.property('Password').to.be.equal('1234');
+          data.should.have.property('FirstName').to.be.equal('Ivan');
+          data.should.have.property('PhoneNumber').to.be.equal('0612345678');
           message.should.be.a('string').to.be.equal('User created');
           done();
         });
@@ -40,10 +38,10 @@ describe('User API', () => {
         .request(server)
         .post('/api/user')
         .send({
-          emailAdress: 'levikooy@gmail.com',
-          password: '1234',
-          firstname: 'Levi',
-          phoneNumber: '0612345678'
+          EmailAdress: 'levikooy@gmail.com',
+          Password: '1234',
+          FirstName: 'Levi',
+          PhoneNumber: '0612345678'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

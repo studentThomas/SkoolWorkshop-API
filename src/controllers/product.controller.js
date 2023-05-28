@@ -4,11 +4,11 @@ const pool = require('../util/mysql-db');
 const productController = {
   //UC201
   createProduct: (req, res, next) => {
-    const { workshopId, quantity, ...productData } = req.body;
+    const { WorkshopId, Quantity, ...productData } = req.body;
 
-    const sqlCheck = `SELECT * FROM product WHERE name = ?`;
+    const sqlCheck = `SELECT * FROM product WHERE Name = ?`;
     const sqlProduct = `INSERT INTO product SET ?`;
-    const sqlStock = `INSERT INTO stock (productId, workshopId, quantity) VALUES (?, ?, ?)`;
+    const sqlStock = `INSERT INTO stock (ProductId, WorkshopId, Quantity) VALUES (?, ?, ?)`;
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -18,7 +18,7 @@ const productController = {
         });
       }
 
-      conn.query(sqlCheck, [productData.name], (error, results) => {
+      conn.query(sqlCheck, [productData.Name], (error, results) => {
         if (error) {
           return next({
             status: 409,
@@ -41,7 +41,9 @@ const productController = {
             }
 
             const productId = resultProduct.insertId;
-            const stockData = [productId, workshopId, quantity];
+            const stockData = [productId, WorkshopId, Quantity];
+            logger.info(`productId: ${productId}`);
+            logger.info(`stockData: ${stockData}`);
 
             conn.query(sqlStock, stockData, (error, resultStock) => {
               if (error) {
@@ -66,8 +68,14 @@ const productController = {
 
   //UC202
   getProducts: (req, res, next) => {
-    const workshopId = req.params.workshopId;
-    const sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?';
+    const workshopId = req.query.WorkshopId;
+    let sqlStatement;
+
+    if (workshopId) {
+      sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.Id = stock.ProductId WHERE stock.WorkshopId = ?';
+    } else {
+      sqlStatement = 'SELECT * FROM product';
+    }
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -105,10 +113,10 @@ const productController = {
 
   //UC203
   updateProduct: (req, res, next) => {
-    const productId = req.params.productId;
+    const productId = req.params.ProductId;
     const updatedProduct = req.body;
-    const sqlStatement = `UPDATE product SET ? WHERE id = ?`;
-    const sqlCheck = `SELECT * FROM product WHERE id = ?`;
+    const sqlStatement = `UPDATE product SET ? WHERE Id = ?`;
+    const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -157,11 +165,11 @@ const productController = {
 
   //UC204
   deleteProduct: (req, res, next) => {
-    const productId = req.params.productId;
-    const sqlCheck = `SELECT * FROM product WHERE id = ?`;
+    const productId = req.params.ProductId;
+    const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
     const sqlStatement = `DELETE product, stock FROM product 
-    LEFT JOIN stock ON product.id = stock.productId
-    WHERE product.id = ?`;
+    LEFT JOIN stock ON product.Id = stock.ProductId
+    WHERE product.Id = ?`;
 
     pool.getConnection(function (err, conn) {
       if (err) {

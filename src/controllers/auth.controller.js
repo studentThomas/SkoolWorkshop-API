@@ -5,7 +5,7 @@ const jwtSecretKey = process.env.JWT_SECRET;
 
 module.exports = {
   login(req, res, next) {
-    const sqlCheck = `SELECT * FROM user WHERE emailAdress = ?`;
+    const sqlCheck = `SELECT * FROM user WHERE EmailAdress = ?`;
     pool.getConnection((err, connection) => {
       if (err) {
         next({

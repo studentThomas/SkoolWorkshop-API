@@ -4,9 +4,9 @@ const nodemailer = require('nodemailer');
 
 const stockController = {
   getStock: (req, res, next) => {
-    const productId = req.params.productId;
+    const productId = req.params.ProductId;
 
-    const sqlCheck = `SELECT * FROM stock WHERE productId = ?`;
+    const sqlCheck = `SELECT * FROM stock WHERE ProductId = ?`;
 
     pool.getConnection((err, conn) => {
       if (err) {
@@ -45,8 +45,8 @@ const stockController = {
   },
 
   updateStock: (req, res, next) => {
-    const productId = req.params.productId;
-    let quantity = Number(req.body.quantity);
+    const productId = req.params.ProductId;
+    let quantity = Number(req.body.Quantity);
 
     let transporter = nodemailer.createTransport({
       host: 'web05.ixlhosting.nl',
@@ -58,8 +58,8 @@ const stockController = {
       }
     });
 
-    const sqlCheck = `SELECT * FROM stock WHERE productId = ?`;
-    const sqlStatement = `UPDATE stock SET quantity = ? WHERE productId = ?`;
+    const sqlCheck = `SELECT * FROM stock WHERE ProductId = ?`;
+    const sqlStatement = `UPDATE stock SET Quantity = ? WHERE ProductId = ?`;
     
     pool.getConnection((err, conn) => {
       if (err) {
@@ -85,9 +85,9 @@ const stockController = {
         }
 
         if (quantity < 0) {
-          quantity = results[0].quantity - Math.abs(quantity);
+          quantity = results[0].Quantity - Math.abs(quantity);
         } else {
-          quantity = results[0].quantity + quantity;
+          quantity = results[0].Quantity + quantity;
         }
 
         if (results.length == 0) {
@@ -114,7 +114,7 @@ const stockController = {
 
           if (results) {
             if (quantity < 5) {
-              const sqlProduct = `SELECT name FROM product WHERE id = ?`;
+              const sqlProduct = `SELECT Name FROM product WHERE Id = ?`;
 
               conn.query(sqlProduct, [productId], (error, productResults) => {
                 if (error) {
@@ -124,7 +124,7 @@ const stockController = {
                   });
                 }
 
-                const productName = productResults[0].name;
+                const productName = productResults[0].Name;
 
                 const mailOptions = {
                   from: 'twa.vermeulen@student.avans.nl',

@@ -4,7 +4,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
-const dbconnection = require('../../src/util/mysql-db');
 
 chai.should();
 chai.use(chaiHttp);
@@ -45,7 +44,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/0')
         .send({
-          quantity: 10
+          Quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -61,7 +60,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          quantity: 10
+          Quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -77,7 +76,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          quantity: -100
+          Quantity: -100
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

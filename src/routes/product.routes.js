@@ -10,16 +10,12 @@ router.use(cors());
 router.post("/product", productController.createProduct);
 
 //UC402
-router.get("/product/:workshopId", productController.getProducts);
+router.get('/product', productController.getProducts);
 
 //UC403
-router.put("/product/:productId", productController.updateProduct);
+router.put('/product/:ProductId', productController.updateProduct);
 
 //UC404
-router.delete("/product/:productId", productController.deleteProduct);
-router.post('/product', productController.createProduct);
-router.get('/product/:workshopId', productController.getProducts);
-router.put('/product/:productId', productController.updateProduct);
-router.delete('/product/:productId', productController.deleteProduct);
+router.delete('/product/:ProductId', productController.deleteProduct);
 
 module.exports = router;
