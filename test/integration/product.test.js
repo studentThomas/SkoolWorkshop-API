@@ -28,7 +28,6 @@ describe('Product API', () => {
       });
     });
   });
-  
   describe('UC-401 Add Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
