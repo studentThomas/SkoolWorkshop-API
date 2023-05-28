@@ -1,8 +1,9 @@
-const logger = require("../util/logger").logger;
-const pool = require("../util/mysql-db");
+const logger = require('../util/logger').logger;
+const pool = require('../util/mysql-db');
 
 const productController = {
-  addProduct: (req, res, next) => {
+  //UC201
+  createProduct: (req, res, next) => {
     const { workshopId, quantity, ...productData } = req.body;
 
     const sqlCheck = `SELECT * FROM product WHERE name = ?`;
@@ -13,7 +14,7 @@ const productController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -21,21 +22,21 @@ const productController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length > 0) {
           return next({
             status: 403,
-            message: `Product already exists`,
+            message: `Product already exists`
           });
         } else {
           conn.query(sqlProduct, productData, (error, resultProduct) => {
             if (error) {
               return next({
                 status: 409,
-                message: error,
+                message: error
               });
             }
 
@@ -46,14 +47,14 @@ const productController = {
               if (error) {
                 return next({
                   status: 409,
-                  message: error,
+                  message: error
                 });
               }
 
               res.status(201).json({
                 status: 201,
-                message: "Product created",
-                data: productData,
+                message: 'Product created',
+                data: productData
               });
             });
           });
@@ -63,16 +64,16 @@ const productController = {
     });
   },
 
+  //UC202
   getProducts: (req, res, next) => {
     const workshopId = req.params.workshopId;
-    const sqlStatement =
-      "SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?";
+    const sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.id = stock.productId WHERE stock.workshopId = ?';
 
     pool.getConnection(function (err, conn) {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -80,16 +81,21 @@ const productController = {
         if (err) {
           return next({
             status: 409,
-            message: err.message,
+            message: err.message
           });
         }
         const products = results;
 
-        if (results) {
+        if (results.length > 0) {
           res.status(200).json({
             status: 200,
-            message: "Products are retrieved",
-            data: products,
+            message: 'Products are retrieved',
+            data: products
+          });
+        } else {
+          res.status(404).json({
+            status: 404,
+            message: 'Workshop has no products'
           });
         }
         pool.releaseConnection(conn);
@@ -97,6 +103,7 @@ const productController = {
     });
   },
 
+  //UC203
   updateProduct: (req, res, next) => {
     const productId = req.params.productId;
     const updatedProduct = req.body;
@@ -107,7 +114,7 @@ const productController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -115,43 +122,42 @@ const productController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length == 0) {
           return next({
-            status: 403,
+            status: 404,
             message: `Product not found`,
+            status: 403,
+            message: `Product not found`
           });
         }
 
-        conn.query(
-          sqlStatement,
-          [updatedProduct, productId],
-          (error, results) => {
-            if (error) {
-              return next({
-                status: 409,
-                message: error,
-              });
-            }
-
-            if (results) {
-              res.send({
-                status: 200,
-                message: `Product updated`,
-                data: updatedProduct,
-              });
-            }
-
-            pool.releaseConnection(conn);
+        conn.query(sqlStatement, [updatedProduct, productId], (error, results) => {
+          if (error) {
+            return next({
+              status: 409,
+              message: error
+            });
           }
-        );
+
+          if (results) {
+            res.send({
+              status: 200,
+              message: `Product updated`,
+              data: updatedProduct
+            });
+          }
+
+          pool.releaseConnection(conn);
+        });
       });
     });
   },
 
+  //UC204
   deleteProduct: (req, res, next) => {
     const productId = req.params.productId;
     const sqlCheck = `SELECT * FROM product WHERE id = ?`;
@@ -163,7 +169,7 @@ const productController = {
       if (err) {
         return next({
           status: 409,
-          message: err.message,
+          message: err.message
         });
       }
 
@@ -171,14 +177,16 @@ const productController = {
         if (error) {
           return next({
             status: 409,
-            message: error,
+            message: error
           });
         }
 
         if (results.length == 0) {
           return next({
-            status: 403,
+            status: 404,
             message: `Product not found`,
+            status: 403,
+            message: `Product not found`
           });
         }
 
@@ -186,7 +194,7 @@ const productController = {
           if (error) {
             return next({
               status: 409,
-              message: error,
+              message: error
             });
           }
 
@@ -194,7 +202,7 @@ const productController = {
             res.send({
               status: 200,
               message: `Product deleted`,
-              data: {},
+              data: {}
             });
           }
 
@@ -202,7 +210,7 @@ const productController = {
         });
       });
     });
-  },
+  }
 };
 
 module.exports = productController;
