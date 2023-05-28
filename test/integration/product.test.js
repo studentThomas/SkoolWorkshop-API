@@ -72,7 +72,7 @@ describe('Product API', () => {
         .send({
           name: 'laptop',
           description: 'description',
-          code: 'code',
+          code: 12345,
           image: 'image',
           quantity: 10,
           workshopId: 1
@@ -112,7 +112,7 @@ describe('Product API', () => {
         .send({
           name: 'laptop',
           description: 'description',
-          code: 'code',
+          code: 12345,
           image: 'image'
         })
         .end((err, res) => {
