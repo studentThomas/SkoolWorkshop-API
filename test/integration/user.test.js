@@ -9,6 +9,61 @@ chai.use(chaiHttp);
 
 describe('User API', () => {
   logger.info('User API test started');
+  describe('UC-101 Login', () => {
+    it('TC-101-1 User is logged in', (done) => {
+      chai
+        .request(server)
+        .post('/api/login')
+        .send({
+          EmailAdress: 'levikooy@gmail.com',
+          Password: '1234'
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(200);
+          res.body.should.be.an('object');
+          data.should.be.an('object');
+          data.should.have.property('EmailAdress').to.be.equal('levikooy@gmail.com');
+          data.should.have.property('Password').to.be.equal('1234');
+          message.should.be.a('string').to.be.equal('User logged in');
+          done();
+        });
+    });
+    it('TC-101-2 User not found', (done) => {
+      chai
+        .request(server)
+        .post('/api/login')
+        .send({
+          EmailAdress: 'test@gmail.com',
+          Password: '1234'
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(404);
+          res.body.should.be.an('object');
+          data.should.be.an('object').to.be.empty;
+          message.should.be.a('string').to.be.equal('User not found');
+          done();
+        });
+    });
+    it('TC-101-3 Not authorized', (done) => {
+      chai
+        .request(server)
+        .post('/api/login')
+        .send({
+          EmailAdress: 'thomas@gmail.com',
+          Password: '12345'
+        })
+        .end((err, res) => {
+          let { status, message, data } = res.body;
+          status.should.equal(400);
+          res.body.should.be.an('object');
+          data.should.be.an('object').to.be.empty;
+          message.should.be.a('string').to.be.equal('Not authorized');
+          done();
+        });
+    });
+  });
   describe('UC-201 Create User', () => {
     it('TC-201-1 User is created', (done) => {
       chai
