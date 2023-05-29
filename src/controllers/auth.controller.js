@@ -14,8 +14,8 @@ module.exports = {
         });
       }
       if (connection) {
-        const { emailAdress, password } = req.body;
-        connection.query(sqlCheck, [emailAdress], (err, results) => {
+        const { EmailAdress, Password } = req.body;
+        connection.query(sqlCheck, [EmailAdress], (err, results) => {
           if (err) {
             next({
               status: 409,
@@ -29,9 +29,9 @@ module.exports = {
           } else {
             const user = results[0];
 
-            if (password === user.password) {
+            if (Password === user.Password) {
               const payload = {
-                userId: user.id
+                userId: user.Id
               };
 
               const token = jwt.sign(payload, jwtSecretKey, {
@@ -74,7 +74,7 @@ module.exports = {
             message: 'Invalid token'
           });
         } else {
-          req.id = payload.userId;
+          req.Id = payload.userId;
           next();
         }
       });
