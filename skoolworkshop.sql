@@ -27,6 +27,7 @@ CREATE TABLE `user` (
   `Password` varchar(255) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
   `PhoneNumber` varchar(255) NOT NULL,
+  `IsAdmin` boolean NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -51,8 +52,8 @@ INSERT INTO `product` VALUES
   (2, 'selfiestick', 'description', 4321, 'URL');
 
 INSERT INTO `user` VALUES 
-  (1, 'test@gmail.com', 'secret', 'Levi', '06123456789'),
-  (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321');
+  (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', '1'),
+  (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', '0');
 
 INSERT INTO `stock` VALUES 
   (1, 1, 100),

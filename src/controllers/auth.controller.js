@@ -29,17 +29,17 @@ module.exports = {
           } else {
             const user = results[0];
 
-            if (password === user.password) {
+            if (password === user.Password) {
               const payload = {
-                userId: user.id
+                userId: user.Id,
+                isAdmin: user.IsAdmin
               };
 
               const token = jwt.sign(payload, jwtSecretKey, {
                 expiresIn: '7d'
               });
 
-              let { password, ...userWithoutPassword } = user;
-
+              let { password, isActive, ...userWithoutPassword } = user;
               res.send({
                 status: 200,
                 message: 'User logged in',
@@ -62,6 +62,7 @@ module.exports = {
   },
 
   validateToken: (req, res, next) => {
+    logger.info('Validating token');
     let header = req.headers.authorization;
 
     if (header) {
@@ -75,7 +76,42 @@ module.exports = {
           });
         } else {
           req.id = payload.userId;
+          logger.info(`User ${req.id} is authorized`);
           next();
+        }
+      });
+    } else {
+      next({
+        status: 401,
+        message: 'Authorization header missing'
+      });
+    }
+  },
+
+  validateAdmin: (req, res, next) => {
+    let header = req.headers.authorization;
+
+    if (header) {
+      let token = header.substring(7, header.length);
+
+      jwt.verify(token, jwtSecretKey, (err, payload) => {
+        if (err) {
+          return next({
+            status: 401,
+            message: 'Invalid token'
+          });
+        }
+
+        const isAdmin = payload.isAdmin;
+
+        if (isAdmin) {
+          req.id = payload.userId;
+          next();
+        } else {
+          next({
+            status: 403,
+            message: 'Not authorized'
+          });
         }
       });
     } else {
