@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 describe('Stock API', () => {
   logger.info('Stock API test started');
   describe('UC-301 Get Stock', () => {
-    it.skip('TC-301-1 Product is not found', (done) => {
+    it('TC-301-1 Product is not found', (done) => {
       chai
         .request(server)
         .get('/api/stock/0')
@@ -25,7 +25,7 @@ describe('Stock API', () => {
           done();
         });
     });
-    it.skip('TC-301-2 Product is found', (done) => {
+    it('TC-301-2 Product is found', (done) => {
       chai
         .request(server)
         .get('/api/stock/1')
@@ -56,7 +56,7 @@ describe('Stock API', () => {
           done();
         });
     });
-    it.skip('TC-302-2 Product is updated', (done) => {
+    it('TC-302-2 Product is updated', (done) => {
       chai
         .request(server)
         .put('/api/stock/1')
@@ -72,7 +72,7 @@ describe('Stock API', () => {
           done();
         });
     });
-    it.skip('TC-302-3 Quantity is to low', (done) => {
+    it('TC-302-3 Quantity is to low', (done) => {
       chai
         .request(server)
         .put('/api/stock/1')
