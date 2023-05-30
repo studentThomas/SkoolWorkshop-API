@@ -21,12 +21,17 @@ const INSERT_USER =
   '(1, "levikooy@gmail.com", "1234", "Levi", "0612345678"),' +
   '(2, "thomas@gmail.com", "1234", "Thomas", "0612345678");';
 
-const INSERT_WORKSHOP = 'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Image`) VALUES' + '(1, "workshop1", "Category1", "description", "image"),' + '(2, "workshop2", "Category2", "description", "image");';
+const INSERT_WORKSHOP =
+  'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Image`) VALUES' +
+  '(1, "workshop1", "Category1", "description", "image"),' +
+  '(2, "workshop2", "Category2", "description", "image");';
 
 const INSERT_PRODUCT =
-  'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image`) VALUES' + '(1, "spuitbus", "description", 123456, "image"),' + '(2, "pencil", "description", 12345, "image");';
+  'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image` ,`Quantity` ) VALUES' +
+  '(1, "spuitbus", "description", 123456, "image", 10),' +
+  '(2, "pencil", "description", 12345, "image", 10);';
 
-const INSERT_STOCK = 'INSERT INTO `stock` (`ProductId`, `WorkshopId`, `Quantity`) VALUES' + '(1, 1, 10),' + '(2, 1, 10);';
+const INSERT_STOCK = 'INSERT INTO `stock` (`ProductId`, `WorkshopId`) VALUES' + '(1, 1),' + '(2, 1);';
 
 describe('Product API', () => {
   logger.info('Product API test started');
@@ -46,7 +51,7 @@ describe('Product API', () => {
       });
     });
   });
-  
+
   describe('UC-401 Create Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
