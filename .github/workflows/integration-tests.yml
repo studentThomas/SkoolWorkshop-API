@@ -53,7 +53,6 @@ jobs:
   #           heroku_email: ${{secrets.HEROKU_USER_EMAIL}}
 
   Railway-deploy:
-    needs: integrationtests
     runs-on: ubuntu-latest
     environment:
       name: Railway # naam van mijn environment op GitHub
