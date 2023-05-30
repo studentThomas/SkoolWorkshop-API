@@ -6,13 +6,13 @@ const cors = require('cors');
 router.use(express.json());
 router.use(cors());
 
-//UC501
+//UC501 Create Workshop
 router.post('/workshop', workshopController.createWorkshop);
 
-//UC502
+//UC502 Get Workshops
 router.get('/workshop', workshopController.getWorkshops);
 
-//UC503
+//UC503 Delete Workshop
 router.delete('/workshop/:workshopId', workshopController.deleteWorkshop);
 
 module.exports = router;

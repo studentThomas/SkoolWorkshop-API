@@ -4,6 +4,9 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
+require('tracer').setLevel('error');
+require('dotenv').config();
+let token = '';
 chai.should();
 chai.use(chaiHttp);
 

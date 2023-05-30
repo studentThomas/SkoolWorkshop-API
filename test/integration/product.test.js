@@ -5,6 +5,7 @@ const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
 const dbconnection = require('../../src/util/mysql-db');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
@@ -46,7 +47,7 @@ describe('Product API', () => {
     });
   });
   
-  describe('UC-401 Add Product', () => {
+  describe('UC-401 Create Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
         .request(server)

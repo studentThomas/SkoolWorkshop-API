@@ -3,6 +3,7 @@ const pool = require('../util/mysql-db');
 const nodemailer = require('nodemailer');
 
 const stockController = {
+  //UC-301 Get Stock
   getStock: (req, res, next) => {
     const productId = req.params.productId;
 
@@ -44,6 +45,7 @@ const stockController = {
     });
   },
 
+  //UC-302 Update Stock
   updateStock: (req, res, next) => {
     const productId = req.params.productId;
     let quantity = Number(req.body.quantity);

@@ -4,6 +4,7 @@ const logger = require('../util/logger').logger;
 const jwtSecretKey = process.env.JWT_SECRET;
 
 module.exports = {
+  //UC-101 Login
   login(req, res, next) {
     const sqlCheck = `SELECT * FROM user WHERE EmailAdress = ?`;
     pool.getConnection((err, connection) => {

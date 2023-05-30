@@ -6,7 +6,7 @@ const cors = require('cors');
 router.use(express.json());
 router.use(cors());
 
-//UC201
+//UC201 Create User
 router.post('/user', userController.createUser);
 
 module.exports = router;

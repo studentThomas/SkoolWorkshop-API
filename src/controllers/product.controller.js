@@ -2,7 +2,7 @@ const logger = require('../util/logger').logger;
 const pool = require('../util/mysql-db');
 
 const productController = {
-  //UC201
+  //UC401 Create Product
   createProduct: (req, res, next) => {
     const { workshopId, quantity, ...productData } = req.body;
 
@@ -66,7 +66,7 @@ const productController = {
     });
   },
 
-  //UC202
+  //UC402 Get Products
   getProducts: (req, res, next) => {
     const workshopId = req.query.workshopId;
     let sqlStatement;
@@ -111,7 +111,7 @@ const productController = {
     });
   },
 
-  //UC203
+  //UC403 Update Product
   updateProduct: (req, res, next) => {
     const productId = req.params.productId;
     const updatedProduct = req.body;
@@ -163,7 +163,7 @@ const productController = {
     });
   },
 
-  //UC204
+  //UC404 Delete Product
   deleteProduct: (req, res, next) => {
     const productId = req.params.productId;
     const sqlCheck = `SELECT * FROM product WHERE Id = ?`;

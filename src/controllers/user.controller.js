@@ -2,6 +2,7 @@ const logger = require("../util/logger").logger;
 const pool = require("../util/mysql-db");
 
 const userController = {
+  //UC-201 Create User
   createUser: (req, res, next) => {
     const user = req.body;
     const sqlStatement = `INSERT INTO user SET ?`;

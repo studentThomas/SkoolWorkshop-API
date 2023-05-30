@@ -4,13 +4,14 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
 
 describe('Workshop API', () => {
   logger.info('Stock API test started');
-  describe('UC-501 Add Workshop', () => {
+  describe('UC-501 Create Workshop', () => {
     it('TC-501-1 Workshop already exists', (done) => {
       chai
         .request(server)
