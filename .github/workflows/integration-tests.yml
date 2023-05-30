@@ -21,7 +21,7 @@ jobs:
         ports:
           - "3306"
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@develop
 
       - name: Start MySQL connection from host
         run: |
@@ -47,7 +47,7 @@ Railway-deploy:
       name: Railway # naam van mijn environment op GitHub
     steps:
       - name: Clone repository
-        uses: actions/checkout@main
+        uses: actions/checkout@develop
 
       - name: 'Current token'
         run: |
