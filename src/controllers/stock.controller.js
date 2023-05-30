@@ -7,7 +7,7 @@ const stockController = {
   getStock: (req, res, next) => {
     const productId = req.params.productId;
 
-    const sqlCheck = `SELECT * FROM stock WHERE ProductId = ?`;
+    const sqlStatement = `SELECT Quantity FROM product WHERE Id = ?`;
 
     pool.getConnection((err, conn) => {
       if (err) {
@@ -17,7 +17,7 @@ const stockController = {
         });
       }
 
-      conn.query(sqlCheck, [productId], (error, results) => {
+      conn.query(sqlStatement, [productId], (error, results) => {
         if (error) {
           return next({
             status: 409,
@@ -60,9 +60,9 @@ const stockController = {
       }
     });
 
-    const sqlCheck = `SELECT * FROM stock WHERE ProductId = ?`;
-    const sqlStatement = `UPDATE stock SET Quantity = ? WHERE ProductId = ?`;
-    
+    const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
+    const sqlStatement = `UPDATE product SET Quantity = ? WHERE Id = ?`;
+
     pool.getConnection((err, conn) => {
       if (err) {
         return next({
@@ -70,7 +70,7 @@ const stockController = {
           message: err.message
         });
       }
-      
+
       conn.query(sqlCheck, [productId], (error, results) => {
         if (error) {
           return next({
@@ -78,11 +78,11 @@ const stockController = {
             message: error
           });
         }
-        
+
         if (results.length == 0) {
           return next({
             status: 409,
-            message: "Product is not found",
+            message: 'Product is not found'
           });
         }
 
