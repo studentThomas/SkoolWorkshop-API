@@ -5,6 +5,7 @@ const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
 const dbconnection = require('../../src/util/mysql-db');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
@@ -46,18 +47,18 @@ describe('Product API', () => {
     });
   });
   
-  describe('UC-401 Add Product', () => {
+  describe('UC-401 Create Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
         .request(server)
         .post('/api/product')
         .send({
-          Name: 'spuitbus',
-          Description: 'description',
-          Code: 123456,
-          Image: 'image',
-          Quantity: 10,
-          WorkshopId: 1
+          name: 'spuitbus',
+          description: 'description',
+          code: 123456,
+          image: 'image',
+          quantity: 10,
+          workshopId: 1
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -73,12 +74,12 @@ describe('Product API', () => {
         .request(server)
         .post('/api/product')
         .send({
-          Name: 'laptop',
-          Description: 'description',
-          Code: 12345,
-          Image: 'image',
-          Quantity: 10,
-          WorkshopId: 1
+          name: 'laptop',
+          description: 'description',
+          code: 12345,
+          image: 'image',
+          quantity: 10,
+          workshopId: 1
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -113,10 +114,10 @@ describe('Product API', () => {
         .request(server)
         .put('/api/product/1')
         .send({
-          Name: 'laptop',
-          Description: 'description',
-          Code: 12345,
-          Image: 'image'
+          name: 'laptop',
+          description: 'description',
+          code: 12345,
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -132,10 +133,10 @@ describe('Product API', () => {
         .request(server)
         .put('/api/product/0')
         .send({
-          Name: 'laptop',
-          Description: 'description',
-          Code: 'code',
-          Image: 'image'
+          name: 'laptop',
+          description: 'description',
+          code: 'code',
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

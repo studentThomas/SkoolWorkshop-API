@@ -4,6 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
@@ -44,7 +45,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/0')
         .send({
-          Quantity: 10
+          quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -60,7 +61,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          Quantity: 10
+          quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -76,7 +77,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          Quantity: -100
+          quantity: -100
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

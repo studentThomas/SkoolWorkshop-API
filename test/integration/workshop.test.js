@@ -4,22 +4,23 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
 
 describe('Workshop API', () => {
   logger.info('Stock API test started');
-  describe('UC-501 Add Workshop', () => {
+  describe('UC-501 Create Workshop', () => {
     it('TC-501-1 Workshop already exists', (done) => {
       chai
         .request(server)
         .post('/api/workshop')
         .send({
-          Name: 'workshop1',
-          Description: 'description',
-          CategoryName: 'Category1',
-          Image: 'image'
+          name: 'workshop1',
+          description: 'description',
+          categoryName: 'Category1',
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -35,10 +36,10 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          Name: 'workshop3',
-          Description: 'description',
-          CategoryName: 'Category3',
-          Image: 'image'
+          name: 'workshop3',
+          description: 'description',
+          categoryName: 'Category3',
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

@@ -17,6 +17,18 @@ app.use('*', (req, res, next) => {
   next();
 });
 
+app.use('/api/info', (req, res) => {
+  res.send({
+    status: 200,
+    message: 'System information',
+    data: {
+      studentNames: 'Thomas Vermeulen, Jozef van Dijk, Ivan van Dijk, Levi Kooy',
+      studentNumbers: '2199434, 2196154, 2187288, 2200517',
+      description: 'This is the system information for the SkoolWorkshop assessment'
+    }
+  });
+});
+
 app.use('/api', authRouter);
 app.use('/api', productRouter);
 app.use('/api', stockRouter);

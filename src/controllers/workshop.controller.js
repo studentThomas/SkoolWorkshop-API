@@ -2,6 +2,7 @@ const logger = require('../util/logger').logger;
 const pool = require('../util/mysql-db');
 
 const workshopController = {
+  //UC-501 Create Workshop
   createWorkshop: (req, res, next) => {
     const workshop = req.body;
 
@@ -16,7 +17,7 @@ const workshopController = {
         });
       }
 
-      conn.query(sqlCheck, [workshop.Name], (error, results) => {
+      conn.query(sqlCheck, [workshop.name], (error, results) => {
         if (error) {
           return next({
             status: 409,
@@ -50,8 +51,9 @@ const workshopController = {
     });
   },
 
+  //UC-502 Get Workshop
   getWorkshops: (req, res, next) => {
-    const categoryName = req.query.CategoryName;
+    const categoryName = req.query.categoryName;
     let sqlStatement;
 
     if (categoryName) {
@@ -88,6 +90,7 @@ const workshopController = {
     });
   },
 
+  //UC-503 Delete Workshop
   deleteWorkshop: (req, res, next) => {
     const workshopId = req.params.workshopId;
     const sqlCheck = `SELECT * FROM workshop WHERE Id = ?`;

@@ -6,10 +6,10 @@ const cors = require('cors');
 router.use(express.json());
 router.use(cors());
 
-//UC301
-router.get('/stock/:ProductId', stockController.getStock);
+//UC301 Get Stock
+router.get('/stock/:productId', stockController.getStock);
 
-//UC302
-router.put('/stock/:ProductId', stockController.updateStock);
+//UC302 Update Stock
+router.put('/stock/:productId', stockController.updateStock);
 
 module.exports = router;
