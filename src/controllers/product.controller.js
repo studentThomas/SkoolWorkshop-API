@@ -4,7 +4,7 @@ const pool = require('../util/mysql-db');
 const productController = {
   //UC201
   createProduct: (req, res, next) => {
-    const { WorkshopId, Quantity, ...productData } = req.body;
+    const { workshopId, quantity, ...productData } = req.body;
 
     const sqlCheck = `SELECT * FROM product WHERE Name = ?`;
     const sqlProduct = `INSERT INTO product SET ?`;
@@ -18,7 +18,7 @@ const productController = {
         });
       }
 
-      conn.query(sqlCheck, [productData.Name], (error, results) => {
+      conn.query(sqlCheck, [productData.name], (error, results) => {
         if (error) {
           return next({
             status: 409,
@@ -41,7 +41,7 @@ const productController = {
             }
 
             const productId = resultProduct.insertId;
-            const stockData = [productId, WorkshopId, Quantity];
+            const stockData = [productId, workshopId, quantity];
             logger.info(`productId: ${productId}`);
             logger.info(`stockData: ${stockData}`);
 
@@ -68,7 +68,7 @@ const productController = {
 
   //UC202
   getProducts: (req, res, next) => {
-    const workshopId = req.query.WorkshopId;
+    const workshopId = req.query.workshopId;
     let sqlStatement;
 
     if (workshopId) {
@@ -113,7 +113,7 @@ const productController = {
 
   //UC203
   updateProduct: (req, res, next) => {
-    const productId = req.params.ProductId;
+    const productId = req.params.productId;
     const updatedProduct = req.body;
     const sqlStatement = `UPDATE product SET ? WHERE Id = ?`;
     const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
@@ -165,7 +165,7 @@ const productController = {
 
   //UC204
   deleteProduct: (req, res, next) => {
-    const productId = req.params.ProductId;
+    const productId = req.params.productId;
     const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
     const sqlStatement = `DELETE product, stock FROM product 
     LEFT JOIN stock ON product.Id = stock.ProductId

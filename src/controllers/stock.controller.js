@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 const stockController = {
   getStock: (req, res, next) => {
-    const productId = req.params.ProductId;
+    const productId = req.params.productId;
 
     const sqlCheck = `SELECT * FROM stock WHERE ProductId = ?`;
 
@@ -35,8 +35,8 @@ const stockController = {
           status: 200,
           message: 'Product is found',
           data: {
-            productId: results[0].productId,
-            quantity: results[0].quantity
+            productId: results[0].ProductId,
+            quantity: results[0].Quantity
           }
         });
         pool.releaseConnection(conn);
@@ -45,8 +45,8 @@ const stockController = {
   },
 
   updateStock: (req, res, next) => {
-    const productId = req.params.ProductId;
-    let quantity = Number(req.body.Quantity);
+    const productId = req.params.productId;
+    let quantity = Number(req.body.quantity);
 
     let transporter = nodemailer.createTransport({
       host: 'web05.ixlhosting.nl',

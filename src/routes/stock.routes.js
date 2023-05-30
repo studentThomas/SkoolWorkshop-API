@@ -7,9 +7,9 @@ router.use(express.json());
 router.use(cors());
 
 //UC301
-router.get('/stock/:ProductId', stockController.getStock);
+router.get('/stock/:productId', stockController.getStock);
 
 //UC302
-router.put('/stock/:ProductId', stockController.updateStock);
+router.put('/stock/:productId', stockController.updateStock);
 
 module.exports = router;

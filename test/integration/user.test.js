@@ -15,8 +15,8 @@ describe('User API', () => {
         .request(server)
         .post('/api/login')
         .send({
-          EmailAdress: 'levikooy@gmail.com',
-          Password: '1234'
+          emailAdress: 'levikooy@gmail.com',
+          password: '1234'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -34,8 +34,8 @@ describe('User API', () => {
         .request(server)
         .post('/api/login')
         .send({
-          EmailAdress: 'test@gmail.com',
-          Password: '1234'
+          emailAdress: 'test@gmail.com',
+          password: '1234'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -51,8 +51,8 @@ describe('User API', () => {
         .request(server)
         .post('/api/login')
         .send({
-          EmailAdress: 'thomas@gmail.com',
-          Password: '12345'
+          emailAdress: 'thomas@gmail.com',
+          password: '12345'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -70,20 +70,20 @@ describe('User API', () => {
         .request(server)
         .post('/api/user')
         .send({
-          EmailAdress: 'ivan@gmail.com',
-          Password: '1234',
-          FirstName: 'Ivan',
-          PhoneNumber: '0612345678'
+          emailAdress: 'ivan@gmail.com',
+          password: '1234',
+          firstName: 'Ivan',
+          phoneNumber: '0612345678'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(201);
           res.body.should.be.an('object');
           data.should.be.an('object');
-          data.should.have.property('EmailAdress').to.be.equal('ivan@gmail.com');
-          data.should.have.property('Password').to.be.equal('1234');
-          data.should.have.property('FirstName').to.be.equal('Ivan');
-          data.should.have.property('PhoneNumber').to.be.equal('0612345678');
+          data.should.have.property('emailAdress').to.be.equal('ivan@gmail.com');
+          data.should.have.property('password').to.be.equal('1234');
+          data.should.have.property('firstName').to.be.equal('Ivan');
+          data.should.have.property('phoneNumber').to.be.equal('0612345678');
           message.should.be.a('string').to.be.equal('User created');
           done();
         });
@@ -93,10 +93,10 @@ describe('User API', () => {
         .request(server)
         .post('/api/user')
         .send({
-          EmailAdress: 'levikooy@gmail.com',
-          Password: '1234',
-          FirstName: 'Levi',
-          PhoneNumber: '0612345678'
+          emailAdress: 'levikooy@gmail.com',
+          password: '1234',
+          firstName: 'Levi',
+          phoneNumber: '0612345678'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

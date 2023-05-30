@@ -15,7 +15,7 @@ const userController = {
         });
       }
 
-      conn.query(sqlCheck, [user.EmailAdress], (error, results) => {
+      conn.query(sqlCheck, [user.emailAdress], (error, results) => {
         if (error) {
           next({
             status: 409,

@@ -14,8 +14,8 @@ module.exports = {
         });
       }
       if (connection) {
-        const { EmailAdress, Password } = req.body;
-        connection.query(sqlCheck, [EmailAdress], (err, results) => {
+        const { emailAdress, password } = req.body;
+        connection.query(sqlCheck, [emailAdress], (err, results) => {
           if (err) {
             next({
               status: 409,
@@ -33,9 +33,6 @@ module.exports = {
               const payload = {
                 userId: user.Id,
                 isAdmin: user.IsAdmin
-            if (Password === user.Password) {
-              const payload = {
-                userId: user.Id
               };
 
               const token = jwt.sign(payload, jwtSecretKey, {
@@ -80,7 +77,6 @@ module.exports = {
         } else {
           req.id = payload.userId;
           logger.info(`User ${req.id} is authorized`);
-          req.Id = payload.userId;
           next();
         }
       });

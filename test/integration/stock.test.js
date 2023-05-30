@@ -44,7 +44,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/0')
         .send({
-          Quantity: 10
+          quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -60,7 +60,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          Quantity: 10
+          quantity: 10
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -76,7 +76,7 @@ describe('Stock API', () => {
         .request(server)
         .put('/api/stock/1')
         .send({
-          Quantity: -100
+          quantity: -100
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

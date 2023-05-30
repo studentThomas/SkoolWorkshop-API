@@ -16,10 +16,10 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          Name: 'workshop1',
-          Description: 'description',
-          CategoryName: 'Category1',
-          Image: 'image'
+          name: 'workshop1',
+          description: 'description',
+          categoryName: 'Category1',
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -35,10 +35,10 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          Name: 'workshop3',
-          Description: 'description',
-          CategoryName: 'Category3',
-          Image: 'image'
+          name: 'workshop3',
+          description: 'description',
+          categoryName: 'Category3',
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;

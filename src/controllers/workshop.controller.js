@@ -16,7 +16,7 @@ const workshopController = {
         });
       }
 
-      conn.query(sqlCheck, [workshop.Name], (error, results) => {
+      conn.query(sqlCheck, [workshop.name], (error, results) => {
         if (error) {
           return next({
             status: 409,
@@ -51,7 +51,7 @@ const workshopController = {
   },
 
   getWorkshops: (req, res, next) => {
-    const categoryName = req.query.CategoryName;
+    const categoryName = req.query.categoryName;
     let sqlStatement;
 
     if (categoryName) {

@@ -14,9 +14,9 @@ router.post('/product', productController.createProduct);
 router.get('/product', productController.getProducts);
 
 //UC403
-router.put('/product/:ProductId', productController.updateProduct);
+router.put('/product/:productId', productController.updateProduct);
 
 //UC404
-router.delete('/product/:ProductId', productController.deleteProduct);
+router.delete('/product/:productId', productController.deleteProduct);
 
 module.exports = router;
