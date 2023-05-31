@@ -22,10 +22,10 @@ const INSERT_USER =
   '(2, "thomas@gmail.com", "1234", "Thomas", "0612345678");';
 
 const INSERT_WORKSHOP =
-  'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Image`) VALUES' +
-  '(1, "workshop1", "Category1", "description", "image"),' +
-  '(2, "workshop2", "Category2", "description", "image"),' +
-  '(3, "workshop3", "Category3", "description", "image");';
+  'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Materials`, `Active`, `Image`) VALUES' +
+  '(1, "workshop1", "Category1", "description", "Materials", 1, "image"),' +
+  '(2, "workshop2", "Category2", "description", "Materials", 1, "image"),' +
+  '(3, "workshop3", "Category3", "description", "Materials", 1, "image");';
 
 const INSERT_PRODUCT =
   'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image` ,`Quantity` ) VALUES' +
