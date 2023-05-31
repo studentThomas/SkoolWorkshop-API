@@ -116,6 +116,12 @@ const stockController = {
 
           if (results) {
             if (quantity < 5) {
+
+              next({
+                status: 400,
+                message: 'Quantity is low'
+              });
+
               const sqlProduct = `SELECT Name FROM product WHERE Id = ?`;
 
               conn.query(sqlProduct, [productId], (error, productResults) => {
@@ -144,15 +150,17 @@ const stockController = {
                   }
                 });
               });
+            } else {
+              res.status(200).json({
+                status: 200,
+                message: 'Quantity is updated',
+                data: {
+                  quantity: quantity
+                }
+              });
             }
 
-            res.status(200).json({
-              status: 200,
-              message: 'Quantity is updated',
-              data: {
-                quantity: quantity
-              }
-            });
+       
           }
         });
         pool.releaseConnection(conn);

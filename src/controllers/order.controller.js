@@ -29,27 +29,21 @@ const orderController = {
                     });
                 }
                 const products = results;
+                let stock = [];
 
                 if (results.length > 0) {
                     products.forEach((product) => {
                         const participants = orderData.ParticipantCount;
                         const participantMultiplier = product.ParticipantMultiplier;
+                        const quantity = Math.ceil(-participants * participantMultiplier);
 
-                        const productQuantity = product.Quantity - (participants * participantMultiplier);
-
-                        logger.info(product.Name);
-                        logger.info(participants * participantMultiplier); 
-                        logger.info(productQuantity);
+                    
+                        stock.push({
+                            ProductId: product.Id,
+                            Quantity: quantity
+                        });
                         
 
-                        conn.query(sqlUpdate, [productQuantity, product.Id], (err, results) => {
-                            if (err) {
-                                return next({
-                                    status: 409,
-                                    message: err.message
-                                });
-                            }
-                        }); 
                         conn.query(sqlStatement, [orderData], (err, results) => {
                             if (err) {
                                 return next({
@@ -62,7 +56,7 @@ const orderController = {
                             res.status(201).json({
                                 status: 201,
                                 message: 'Order created',
-                                data: orderData
+                                data: stock
                             });
                         });  
                     });
@@ -71,21 +65,6 @@ const orderController = {
 
             });
 
-            // conn.query(sqlStatement, [orderData], (err, results) => {
-            //     if (err) {
-            //         return next({
-            //             status: 409,
-            //             message: err.message
-            //         });
-            //     }
-       
-
-            //     res.status(201).json({
-            //         status: 201,
-            //         message: 'Order created',
-            //         data: orderData
-            //     });
-            // });
             pool.releaseConnection(conn);
         });
     },
