@@ -18,8 +18,10 @@ describe('Workshop API', () => {
         .post('/api/workshop')
         .send({
           name: 'workshop1',
-          description: 'description',
           categoryName: 'Category1',
+          description: 'description',
+          materials: 'Materials',
+          active: 1,
           image: 'image'
         })
         .end((err, res) => {
@@ -37,8 +39,10 @@ describe('Workshop API', () => {
         .post('/api/workshop')
         .send({
           name: 'workshop4',
-          description: 'description',
           categoryName: 'Category4',
+          description: 'description',
+          materials: 'Materials',
+          active: 1,
           image: 'image'
         })
         .end((err, res) => {
