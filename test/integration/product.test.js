@@ -24,7 +24,8 @@ const INSERT_USER =
 const INSERT_WORKSHOP =
   'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Image`) VALUES' +
   '(1, "workshop1", "Category1", "description", "image"),' +
-  '(2, "workshop2", "Category2", "description", "image");';
+  '(2, "workshop2", "Category2", "description", "image"),' +
+  '(3, "workshop3", "Category3", "description", "image");';
 
 const INSERT_PRODUCT =
   'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image` ,`Quantity` ) VALUES' +
