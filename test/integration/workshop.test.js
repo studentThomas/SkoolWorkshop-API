@@ -36,9 +36,9 @@ describe('Workshop API', () => {
         .request(server)
         .post('/api/workshop')
         .send({
-          name: 'workshop3',
+          name: 'workshop4',
           description: 'description',
-          categoryName: 'Category3',
+          categoryName: 'Category4',
           image: 'image'
         })
         .end((err, res) => {
@@ -83,7 +83,7 @@ describe('Workshop API', () => {
     it('TC-503-2 Workshop deleted', (done) => {
       chai
         .request(server)
-        .delete('/api/workshop/2')
+        .delete('/api/workshop/3')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(200);
