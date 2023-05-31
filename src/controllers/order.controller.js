@@ -5,7 +5,7 @@ const jwtSecretKey = process.env.JWT_SECRET;
 
 const orderController = {
 
-    //UC-501 
+    //UC-601 
     createOrder: (req, res, next) => {
         const sqlStatement = 'INSERT INTO orderworkshop SET ?';
         const sqlProduct = 'SELECT * FROM product JOIN stock ON product.Id = stock.ProductId WHERE stock.WorkshopId = ?';
@@ -53,15 +53,16 @@ const orderController = {
                             }
                    
             
-                            res.status(201).json({
-                                status: 201,
-                                message: 'Order created',
-                                data: stock
-                            });
+                            
                         });  
                     });
 
                 }
+                res.status(201).json({
+                    status: 201,
+                    message: 'Order created',
+                    data: stock
+                });
 
             });
 
