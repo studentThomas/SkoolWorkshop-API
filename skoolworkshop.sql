@@ -26,7 +26,7 @@ CREATE TABLE product (
   `Code` bigint,
   `Image` varchar(255) NOT NULL,
   `Reusable` boolean NOT NULL DEFAULT '0',
-  `Quantity` int NOT NULL,
+  `Quantity` int NOT NULL ,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -122,7 +122,7 @@ INSERT INTO `workshop` VALUES
 (30,'CombiWorkshop','Combi','','',1,'image.png');
 
 INSERT INTO product VALUES 
-  (1, 'spuitbus', 'description', 1234, 'URL', 0,100),
+  (1, 'spuitbus', 'description', 1234, 'URL', 0,-5),
   (2, 'selfiestick', 'description', 4321, 'URL', 1,100);
 
 INSERT INTO `user` VALUES 

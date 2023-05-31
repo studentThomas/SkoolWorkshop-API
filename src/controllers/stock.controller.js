@@ -99,12 +99,7 @@ const stockController = {
           });
         }
 
-        if (quantity < 0) {
-          return next({
-            status: 409,
-            message: 'Quantity to low'
-          });
-        }
+
 
         conn.query(sqlStatement, [quantity, productId], (error, results) => {
           if (err) {
@@ -117,9 +112,12 @@ const stockController = {
           if (results) {
             if (quantity < 5) {
 
-              next({
+              res.status(400).json({
                 status: 400,
-                message: 'Quantity is low'
+                message: 'Quantity is updated',
+                data: {
+                  quantity: quantity
+                }
               });
 
               const sqlProduct = `SELECT Name FROM product WHERE Id = ?`;
