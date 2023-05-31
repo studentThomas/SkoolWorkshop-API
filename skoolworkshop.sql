@@ -156,4 +156,3 @@ INSERT INTO `userorderworkshop` VALUES
 (42,'aeea85de-d207-4bc8-8c1b-2fdb02e4e65e',11,'Cancelled','\r\n15-12-2022 15:22:29: \r\nStatus: Cancelled\r\nReden: Geen zin\r\n'),
 (43,'dec9ceb3-9176-4ca9-bdc3-d07916ad9c64',14,'Committed',NULL),(44,'aeea85de-d207-4bc8-8c1b-2fdb02e4e65e',14,'Committed','');
 
-
