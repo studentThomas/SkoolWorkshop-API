@@ -17,15 +17,19 @@ CREATE TABLE `workshop` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `product` (
+
+
+CREATE TABLE product (
   `Id` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(200) NOT NULL,
   `Description` varchar(400) NOT NULL,
   `Code` bigint,
   `Image` varchar(255) NOT NULL,
+  `Reusable` boolean NOT NULL DEFAULT '0',
   `Quantity` int NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 CREATE TABLE `user` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -40,6 +44,7 @@ CREATE TABLE `user` (
 CREATE TABLE `stock` (
   `WorkshopId` int NOT NULL,
   `ProductId` int NOT NULL,
+  `ParticipantMultiplier` decimal(5,2) NOT NULL,
   PRIMARY KEY (`WorkshopId`, `ProductId`),
   KEY `IDX_stock_workshop` (`WorkshopId`),
   KEY `IDX_stock_product` (`ProductId`),
@@ -80,18 +85,7 @@ CREATE TABLE `orderworkshop` (
   CONSTRAINT `FK_OrderWorkshop_Workshop_WorkshopId` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `userorderworkshop` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `UserProfileUserId` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-  `OrderWorkshopId` int NOT NULL,
-  `Status` longtext CHARACTER SET utf8mb4 NOT NULL,
-  `Reason` longtext CHARACTER SET utf8mb4,
-  PRIMARY KEY (`Id`),
-  UNIQUE KEY `IX_UserOrderWorkshop_UserProfileUserId_OrderWorkshopId` (`UserProfileUserId`,`OrderWorkshopId`),
-  KEY `IX_UserOrderWorkshop_OrderWorkshopId` (`OrderWorkshopId`),
-  CONSTRAINT `FK_UserOrderWorkshop_OrderWorkshop_OrderWorkshopId` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE
-  -- CONSTRAINT `FK_UserOrderWorkshop_UserProfile_UserProfileUserId` FOREIGN KEY (`UserProfileUserId`) REFERENCES `user` (`Id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
 -- Insert data
@@ -127,32 +121,30 @@ INSERT INTO `workshop` VALUES
 (29,'Theatersport','Theater','','',1,'image.png'),
 (30,'CombiWorkshop','Combi','','',1,'image.png');
 
-INSERT INTO `product` VALUES 
-  (1, 'spuitbus', 'description', 1234, 'URL',100),
-  (2, 'selfiestick', 'description', 4321, 'URL',100);
+INSERT INTO product VALUES 
+  (1, 'spuitbus', 'description', 1234, 'URL', 0,100),
+  (2, 'selfiestick', 'description', 4321, 'URL', 1,100);
 
 INSERT INTO `user` VALUES 
   (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', '1'),
   (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', '0');
 
-INSERT INTO `stock` VALUES 
-  (1, 1),
-  (2, 2),
-  (1, 2);
+INSERT INTO stock VALUES 
+  (1, 1, 1.00),
+  (2, 2, 0.33),
+  (1, 2, 0.50);
+
 
 INSERT INTO `order` VALUES 
 (3,2,NULL,NULL,'2022-12-22 00:00:00.000000',0,3,0,0,0,0,1,0.00),
 (4,3,'In de workshop moeten er Surinaamse elementen verwerkt worden',NULL,'2022-12-16 00:00:00.000000',0,2,1,15,1,45,1,0.00);
 
 INSERT INTO `orderworkshop` VALUES 
-(11,3,17,1,25,3,'3 mbo',NULL),
-(12,3,20,1,25,3,'3 mbo',NULL),
+(11,3,1,1,25,3,'3 mbo',NULL),
+(12,3,2,1,25,3,'3 mbo',NULL),
 (13,3,5,1,25,3,'3 mbo',NULL),
 (14,4,20,1,20,2,'2 Mavo',NULL),
 (15,4,17,1,20,2,'2 Mavo',NULL);
 
-INSERT INTO `userorderworkshop` VALUES 
-(40,'dec9ceb3-9176-4ca9-bdc3-d07916ad9c64',13,'Requested',NULL),
-(42,'aeea85de-d207-4bc8-8c1b-2fdb02e4e65e',11,'Cancelled','\r\n15-12-2022 15:22:29: \r\nStatus: Cancelled\r\nReden: Geen zin\r\n'),
-(43,'dec9ceb3-9176-4ca9-bdc3-d07916ad9c64',14,'Committed',NULL),(44,'aeea85de-d207-4bc8-8c1b-2fdb02e4e65e',14,'Committed','');
+
 
