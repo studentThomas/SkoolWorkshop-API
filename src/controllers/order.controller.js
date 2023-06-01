@@ -5,7 +5,7 @@ const jwtSecretKey = process.env.JWT_SECRET;
 
 const orderController = {
 
-    //UC-601 
+    //UC-601 Create Order
     createOrder: (req, res, next) => {
         const sqlStatement = 'INSERT INTO orderworkshop SET ?';
         const sqlProduct = 'SELECT * FROM product JOIN stock ON product.Id = stock.ProductId WHERE stock.WorkshopId = ?';
@@ -34,10 +34,16 @@ const orderController = {
                 if (results.length > 0) {
                     products.forEach((product) => {
                         const participants = orderData.ParticipantCount;
+                        let quantity = 0;
                         const participantMultiplier = product.ParticipantMultiplier;
-                        const quantity = Math.ceil(-participants * participantMultiplier);
+                        if(product.Reusable == 0){
+                            quantity = Math.ceil(-participants * participantMultiplier) ;
+                        } else if(product.Reusable == 1){
+                            quantity = Math.ceil(-participants * participantMultiplier) * (orderData.RoundCount * product.Reusable);
+                        }
 
-                    
+                   
+
                         stock.push({
                             ProductId: product.Id,
                             Quantity: quantity

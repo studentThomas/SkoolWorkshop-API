@@ -7,7 +7,7 @@ const authController = require('../controllers/auth.controller');
 router.use(express.json());
 router.use(cors());
 
-//UC601 
+//UC601 Create Order
 router.post('/order', orderController.createOrder);
 
 

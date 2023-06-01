@@ -60,6 +60,8 @@ const stockController = {
       }
     });
 
+    let productName = '';
+
     const sqlCheck = `SELECT * FROM product WHERE Id = ?`;
     const sqlStatement = `UPDATE product SET Quantity = ? WHERE Id = ?`;
 
@@ -78,6 +80,8 @@ const stockController = {
             message: error
           });
         }
+
+        productName = results[0].Name;
 
         if (results.length == 0) {
           return next({
@@ -122,32 +126,22 @@ const stockController = {
 
               const sqlProduct = `SELECT Name FROM product WHERE Id = ?`;
 
-              conn.query(sqlProduct, [productId], (error, productResults) => {
-                if (error) {
-                  return next({
-                    status: 409,
-                    message: error
-                  });
-                }
-
-                const productName = productResults[0].Name;
-
-                const mailOptions = {
-                  from: 'twa.vermeulen@student.avans.nl',
-                  to: 'vermeulen.thomas@icloud.com',
-                  subject: `Low quantity "${productName}"`,
-                  text: `The quantity of product "${productName}" is low. Current quantity: ${quantity}`
-                };
+              const mailOptions = {
+                from: 'twa.vermeulen@student.avans.nl',
+                to: 'vermeulen.thomas@icloud.com', //info@skoolworkshop.nl
+                subject: `Low quantity "${productName}"`,
+                text: `The quantity of product "${productName}" is low. Current quantity: ${quantity}`
+              };
 
                 // Send the email
-                transporter.sendMail(mailOptions, (error, info) => {
-                  if (error) {
-                    console.error('Error sending email:', error);
-                  } else {
-                    console.log('Email sent:', info.response);
-                  }
-                });
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  console.error('Error sending email:', error);
+                } else {
+                  console.log('Email sent:', info.response);
+                }
               });
+
             } else {
               res.status(200).json({
                 status: 200,
