@@ -70,3 +70,7 @@ jobs:
         run: railway up
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Populate database
+      run: |
+        mysql -h ${{ secrets.DB_HOST }} -P ${{ secrets.DB_PORT }} -u ${{ secrets.DB_USER }} -p"${{ secrets.DB_PASSWORD }}" -D ${{ secrets.DB_DATABASE }} < mysqldb.sql
