@@ -34,10 +34,16 @@ const orderController = {
                 if (results.length > 0) {
                     products.forEach((product) => {
                         const participants = orderData.ParticipantCount;
+                        let quantity = 0;
                         const participantMultiplier = product.ParticipantMultiplier;
-                        const quantity = Math.ceil(-participants * participantMultiplier);
+                        if(product.Reusable == 0){
+                            quantity = Math.ceil(-participants * participantMultiplier) ;
+                        } else if(product.Reusable == 1){
+                            quantity = Math.ceil(-participants * participantMultiplier) * (orderData.RoundCount * product.Reusable);
+                        }
 
-                    
+                   
+
                         stock.push({
                             ProductId: product.Id,
                             Quantity: quantity
