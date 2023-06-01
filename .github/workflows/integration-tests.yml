@@ -61,4 +61,4 @@ jobs:
 
       - name: Populate database
         run: |
-          railway run "mysql -h ${{ env.DB_HOST }} -P ${{ env.DB_PORT }} -u ${{ env.DB_USER }} -p'${{ env.DB_PASSWORD }}' -D ${{ env.DB_DATABASE }} < skoolworkshop.sql"
+          mysql -h ${{ env.DB_HOST }} -P ${{ env.DB_PORT }} -u ${{ env.DB_USER }} -p"${{ env.DB_PASSWORD }}" -D ${{ env.DB_DATABASE }} < skoolworkshop.sql
