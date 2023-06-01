@@ -42,8 +42,6 @@ const productController = {
 
             const productId = resultProduct.insertId;
             const stockData = [productId, workshopId, participantMultiplier];
-            logger.info(`productId: ${productId}`);
-            logger.info(`stockData: ${stockData}`);
 
             conn.query(sqlStock, stockData, (error, resultStock) => {
               if (error) {
@@ -69,13 +67,30 @@ const productController = {
   //UC402 Get Products
   getProducts: (req, res, next) => {
     const workshopId = req.query.workshopId;
-    let sqlStatement;
-
-    if (workshopId) {
-      sqlStatement = 'SELECT product.* FROM product JOIN stock ON product.Id = stock.ProductId WHERE stock.WorkshopId = ?';
-    } else {
-      sqlStatement = 'SELECT * FROM product';
+    const categoryName = req.query.categoryName;
+    
+    let sqlStatement = "SELECT product.* FROM product";
+    
+    logger.info(`workshopId: ${workshopId}`);
+    logger.info(`categoryName: ${categoryName}`);
+    
+    if (workshopId && categoryName) {
+      sqlStatement += `
+        JOIN productcategory ON product.CategoryId = productcategory.Id
+        JOIN stock ON product.id = stock.productId
+        WHERE stock.workshopId = "${workshopId}" AND productcategory.Name = "${categoryName}"`;
+    } else if (workshopId) {
+      sqlStatement += `
+        JOIN stock ON product.id = stock.productId
+        WHERE stock.workshopId = "${workshopId}"`;
+    } else if (categoryName) {
+      sqlStatement += `
+        JOIN productcategory ON product.CategoryId = productcategory.Id
+        WHERE productcategory.Name = "${categoryName}"`;
     }
+
+    logger.info(`sqlStatement: ${sqlStatement}`);
+
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -85,7 +100,7 @@ const productController = {
         });
       }
 
-      conn.query(sqlStatement, [workshopId], (err, results) => {
+      conn.query(sqlStatement, (err, results) => {
         if (err) {
           return next({
             status: 409,
@@ -103,7 +118,7 @@ const productController = {
         } else {
           res.status(404).json({
             status: 404,
-            message: 'Workshop has no products'
+            message: 'No products'
           });
         }
         pool.releaseConnection(conn);

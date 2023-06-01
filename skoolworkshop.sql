@@ -18,9 +18,9 @@ CREATE TABLE `workshop` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE product_category (
+CREATE TABLE productcategory (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `Category` varchar(100) NOT NULL,
+  `Name` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -44,7 +44,7 @@ CREATE TABLE product (
   `Reusable` boolean NOT NULL DEFAULT '0',
   `Quantity` int NOT NULL,
   PRIMARY KEY (`Id`),
-  CONSTRAINT `FK_product_product_category` FOREIGN KEY (`CategoryId`) REFERENCES `product_category` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_product_productcategory` FOREIGN KEY (`CategoryId`) REFERENCES `productcategory` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `stock` (
@@ -106,7 +106,7 @@ INSERT INTO `workshop` VALUES
 (29,'Theatersport','Theater','','',1,'image.png'),
 (30,'CombiWorkshop','Combi','','',1,'image.png');
 
-INSERT INTO product_category VALUES 
+INSERT INTO productcategory VALUES 
   (1, 'spuitbussen'),
   (2, 'digitaal');
 
@@ -122,10 +122,14 @@ INSERT INTO `user` VALUES
   (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', '1'),
   (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', '0');
 
+
 INSERT INTO stock VALUES 
   (1, 1, 1.00),
   (2, 2, 0.33),
-  (1, 2, 0.50);
+  (2, 1, 0.33),
+  (2, 3, 0.33),
+  (1, 4, 0.50);
+
 
 INSERT INTO `orderworkshop` VALUES 
 (11,3,1,1,25,3,'3 mbo',NULL),

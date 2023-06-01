@@ -42,14 +42,11 @@ const orderController = {
                             quantity = Math.ceil(-participants * participantMultiplier) * (orderData.RoundCount * product.Reusable);
                         }
 
-                   
-
                         stock.push({
                             ProductId: product.Id,
                             Quantity: quantity
                         });
                         
-
                         conn.query(sqlStatement, [orderData], (err, results) => {
                             if (err) {
                                 return next({
@@ -57,9 +54,6 @@ const orderController = {
                                     message: err.message
                                 });
                             }
-                   
-            
-                            
                         });  
                     });
 
