@@ -5,7 +5,7 @@ const jwtSecretKey = process.env.JWT_SECRET;
 
 const orderController = {
 
-    //UC-601 
+    //UC-601 Create Order
     createOrder: (req, res, next) => {
         const sqlStatement = 'INSERT INTO orderworkshop SET ?';
         const sqlProduct = 'SELECT * FROM product JOIN stock ON product.Id = stock.ProductId WHERE stock.WorkshopId = ?';
