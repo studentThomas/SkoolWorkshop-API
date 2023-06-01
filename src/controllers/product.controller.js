@@ -4,11 +4,11 @@ const pool = require('../util/mysql-db');
 const productController = {
   //UC401 Create Product
   createProduct: (req, res, next) => {
-    const { workshopId, ...productData } = req.body;
+    const { workshopId, participantMultiplier, ...productData } = req.body;
 
     const sqlCheck = `SELECT * FROM product WHERE Name = ?`;
     const sqlProduct = `INSERT INTO product SET ?`;
-    const sqlStock = `INSERT INTO stock (ProductId, WorkshopId) VALUES (?, ?)`;
+    const sqlStock = `INSERT INTO stock (ProductId, WorkshopId, ParticipantMultiplier) VALUES (?, ?, ?)`;
 
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -41,7 +41,7 @@ const productController = {
             }
 
             const productId = resultProduct.insertId;
-            const stockData = [productId, workshopId];
+            const stockData = [productId, workshopId, participantMultiplier];
             logger.info(`productId: ${productId}`);
             logger.info(`stockData: ${stockData}`);
 
