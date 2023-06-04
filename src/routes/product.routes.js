@@ -19,4 +19,6 @@ router.put('/product/:productId', productController.updateProduct);
 //UC404 Delete Product
 router.delete('/product/:productId', productController.deleteProduct);
 
+router.get('/product/:productId', productController.getProductById);
+
 module.exports = router;
