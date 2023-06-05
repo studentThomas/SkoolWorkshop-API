@@ -271,44 +271,6 @@ const productController = {
     });
   },
 
-  getProductByName: (req, res, next) => {
-    const productName = req.params.productName;
-    const sqlStatement = `SELECT * FROM product WHERE Name = ?`;
-
-    pool.getConnection(function (err, conn) {
-      if (err) {
-        return next({
-          status: 409,
-          message: err.message
-        });
-      }
-
-      conn.query(sqlStatement, [productName], (error, results) => {
-        if (error) {
-          return next({
-            status: 409,
-            message: error
-          });
-        }
-
-        if (results.length > 0) {
-          res.status(200).json({
-            status: 200,
-            message: 'Product is retrieved',
-            data: results[0]
-          });
-
-        } else {
-          res.status(404).json({
-            status: 404,
-            message: 'Product not found'
-          });
-        }
-        pool.releaseConnection(conn);
-      });
-    });
-  }
-
 
 
 
