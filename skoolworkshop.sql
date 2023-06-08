@@ -146,7 +146,7 @@ INSERT INTO stock VALUES
   (1, 1, 1.00),
   (2, 2, 0.33),
   (2, 1, 0.33),
-  (2, 3, 0.33),
+  (2, 3, 0.5),
   (1, 4, 0.50);
 
 
@@ -161,9 +161,6 @@ INSERT INTO orderproduct VALUES
   (12, 1, 100);
 
 
-
-
-
 DELIMITER //
 CREATE TRIGGER trg_insert_orderworkshop
 AFTER INSERT ON orderworkshop
@@ -171,15 +168,16 @@ FOR EACH ROW
 BEGIN
   DECLARE OrderWorkshopId INT;
   DECLARE Product_Id INT;
+  DECLARE Participant_Multiplier DECIMAL(5,2);
+  DECLARE Quantity INT;
 
   -- Declare variables for cursor handling
   DECLARE done INT DEFAULT FALSE;
   DECLARE cur_product CURSOR FOR
-    SELECT ProductId
-    FROM stock
-    WHERE WorkshopId = NEW.WorkshopId;
+    SELECT s.ProductId, s.ParticipantMultiplier
+    FROM stock s
+    WHERE s.WorkshopId = NEW.WorkshopId;
 
-  -- Declare handler for not found condition
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
@@ -187,21 +185,62 @@ BEGIN
   -- Open the cursor
   OPEN cur_product;
 
-  -- Fetch rows from the cursor and insert into orderproduct table
   read_loop: LOOP
-    FETCH cur_product INTO Product_Id;
+    FETCH cur_product INTO Product_Id, Participant_Multiplier;
     IF done THEN
       LEAVE read_loop;
     END IF;
 
-    INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_id, 69);
+    SET Quantity = NEW.ParticipantCount * Participant_Multiplier;
+
+    INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_Id, Quantity);
   END LOOP;
 
-  -- Close the cursor
   CLOSE cur_product;
 
 END //
 DELIMITER ;
+
+
+
+-- DELIMITER //
+-- CREATE TRIGGER trg_insert_orderworkshop
+-- AFTER INSERT ON orderworkshop
+-- FOR EACH ROW
+-- BEGIN
+--   DECLARE OrderWorkshopId INT;
+--   DECLARE Product_Id INT;
+
+--   -- Declare variables for cursor handling
+--   DECLARE done INT DEFAULT FALSE;
+--   DECLARE cur_product CURSOR FOR
+--     SELECT ProductId
+--     FROM stock
+--     WHERE WorkshopId = NEW.WorkshopId;
+
+--   -- Declare handler for not found condition
+--   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+--   SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
+
+--   -- Open the cursor
+--   OPEN cur_product;
+
+--   -- Fetch rows from the cursor and insert into orderproduct table
+--   read_loop: LOOP
+--     FETCH cur_product INTO Product_Id;
+--     IF done THEN
+--       LEAVE read_loop;
+--     END IF;
+
+--     INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_id, 69);
+--   END LOOP;
+
+--   -- Close the cursor
+--   CLOSE cur_product;
+
+-- END //
+-- DELIMITER ;
 
 
 
