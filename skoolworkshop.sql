@@ -61,10 +61,11 @@ CREATE TABLE `orderworkshop` (
   `SubGroup` longtext CHARACTER SET utf8mb4,
   `WorkshopInfo` longtext CHARACTER SET utf8mb4,
   PRIMARY KEY (`Id`),
-  KEY `IX_OrderWorkshop_OrderId` (`OrderId`),
   KEY `IX_OrderWorkshop_WorkshopId` (`WorkshopId`),
   CONSTRAINT `FK_OrderWorkshop_Workshop_WorkshopId` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
 CREATE TABLE `stock` (
   `WorkshopId` int NOT NULL,
@@ -80,7 +81,7 @@ CREATE TABLE `stock` (
 CREATE TABLE `orderproduct` (
   `OrderWorkshopId` int NOT NULL,
   `ProductId` int NOT NULL,
-  `Quantity` int NOT NULL,
+  `Quantity` int  NULL,
   PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
   KEY `IDX_orderproduct_workshop` (`OrderWorkshopId`),
   KEY `IDX_orderproduct_product` (`ProductId`),
@@ -157,12 +158,70 @@ INSERT INTO `orderworkshop` VALUES
 (15,4,17,1,20,2,'2 Mavo',NULL);
 
 INSERT INTO orderproduct VALUES 
-  (11, 1, 100),
-  (11, 2, 100),
-  (11, 3, 100),
-  (11, 4, 100),
-  (12, 1, 100),
-  (12, 2, 100),
-  (15, 4, 100);
+  (12, 1, 100);
+
+
+
+
+
+DELIMITER //
+CREATE TRIGGER trg_insert_orderworkshop
+AFTER INSERT ON orderworkshop
+FOR EACH ROW
+BEGIN
+  DECLARE OrderWorkshopId INT;
+  DECLARE Product_Id INT;
+
+  -- Declare variables for cursor handling
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE cur_product CURSOR FOR
+    SELECT ProductId
+    FROM stock
+    WHERE WorkshopId = NEW.WorkshopId;
+
+  -- Declare handler for not found condition
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
+
+  -- Open the cursor
+  OPEN cur_product;
+
+  -- Fetch rows from the cursor and insert into orderproduct table
+  read_loop: LOOP
+    FETCH cur_product INTO Product_Id;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_id, 69);
+  END LOOP;
+
+  -- Close the cursor
+  CLOSE cur_product;
+
+END //
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
