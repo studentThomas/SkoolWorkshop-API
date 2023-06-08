@@ -1,11 +1,13 @@
 DROP TABLE IF EXISTS `stock`;
+DROP TABLE IF EXISTS `orderproduct`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `product`;
 DROP TABLE IF EXISTS `userorderworkshop`;
 DROP TABLE IF EXISTS `orderworkshop`;
 DROP TABLE IF EXISTS `order`;
 DROP TABLE IF EXISTS `workshop`;
-DROP TABLE IF EXISTS `product_category`;
+DROP TABLE IF EXISTS `productcategory`;
+
 
 CREATE TABLE `workshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -47,16 +49,7 @@ CREATE TABLE product (
   CONSTRAINT `FK_product_productcategory` FOREIGN KEY (`CategoryId`) REFERENCES `productcategory` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `stock` (
-  `WorkshopId` int NOT NULL,
-  `ProductId` int NOT NULL,
-  `ParticipantMultiplier` decimal(5,2) NOT NULL,
-  PRIMARY KEY (`WorkshopId`, `ProductId`),
-  KEY `IDX_stock_workshop` (`WorkshopId`),
-  KEY `IDX_stock_product` (`ProductId`),
-  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 CREATE TABLE `orderworkshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -72,6 +65,31 @@ CREATE TABLE `orderworkshop` (
   KEY `IX_OrderWorkshop_WorkshopId` (`WorkshopId`),
   CONSTRAINT `FK_OrderWorkshop_Workshop_WorkshopId` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `stock` (
+  `WorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `ParticipantMultiplier` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`WorkshopId`, `ProductId`),
+  KEY `IDX_stock_workshop` (`WorkshopId`),
+  KEY `IDX_stock_product` (`ProductId`),
+  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `orderproduct` (
+  `OrderWorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `Quantity` int NOT NULL,
+  PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
+  KEY `IDX_orderproduct_workshop` (`OrderWorkshopId`),
+  KEY `IDX_orderproduct_product` (`ProductId`),
+  CONSTRAINT `FK_orderproduct_orderworkshop` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_orderproduct_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
 
 -- Insert data
 INSERT INTO `workshop` VALUES 
@@ -137,3 +155,14 @@ INSERT INTO `orderworkshop` VALUES
 (13,3,5,1,25,3,'3 mbo',NULL),
 (14,4,20,1,20,2,'2 Mavo',NULL),
 (15,4,17,1,20,2,'2 Mavo',NULL);
+
+INSERT INTO orderproduct VALUES 
+  (11, 1, 100),
+  (11, 2, 100),
+  (11, 3, 100),
+  (11, 4, 100),
+  (12, 1, 100),
+  (12, 2, 100),
+  (15, 4, 100);
+
+
