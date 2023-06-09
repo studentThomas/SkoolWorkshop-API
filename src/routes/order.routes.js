@@ -10,6 +10,9 @@ router.use(cors());
 //UC601 Create Order
 router.post('/order', orderController.createOrder);
 
+//UC602 Get Orders
+router.get('/order', orderController.getOrders);
+
 
 
 
