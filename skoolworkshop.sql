@@ -1,11 +1,13 @@
 DROP TABLE IF EXISTS `stock`;
+DROP TABLE IF EXISTS `orderproduct`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `product`;
 DROP TABLE IF EXISTS `userorderworkshop`;
 DROP TABLE IF EXISTS `orderworkshop`;
 DROP TABLE IF EXISTS `order`;
 DROP TABLE IF EXISTS `workshop`;
-DROP TABLE IF EXISTS `product_category`;
+DROP TABLE IF EXISTS `productcategory`;
+
 
 CREATE TABLE `workshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -47,16 +49,7 @@ CREATE TABLE product (
   CONSTRAINT `FK_product_productcategory` FOREIGN KEY (`CategoryId`) REFERENCES `productcategory` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `stock` (
-  `WorkshopId` int NOT NULL,
-  `ProductId` int NOT NULL,
-  `ParticipantMultiplier` decimal(5,2) NOT NULL,
-  PRIMARY KEY (`WorkshopId`, `ProductId`),
-  KEY `IDX_stock_workshop` (`WorkshopId`),
-  KEY `IDX_stock_product` (`ProductId`),
-  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 CREATE TABLE `orderworkshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -68,10 +61,36 @@ CREATE TABLE `orderworkshop` (
   `SubGroup` longtext CHARACTER SET utf8mb4,
   `WorkshopInfo` longtext CHARACTER SET utf8mb4,
   PRIMARY KEY (`Id`),
-  KEY `IX_OrderWorkshop_OrderId` (`OrderId`),
   KEY `IX_OrderWorkshop_WorkshopId` (`WorkshopId`),
   CONSTRAINT `FK_OrderWorkshop_Workshop_WorkshopId` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
+CREATE TABLE `stock` (
+  `WorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `ParticipantMultiplier` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`WorkshopId`, `ProductId`),
+  KEY `IDX_stock_workshop` (`WorkshopId`),
+  KEY `IDX_stock_product` (`ProductId`),
+  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `orderproduct` (
+  `OrderWorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `Quantity` int  NULL,
+  PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
+  KEY `IDX_orderproduct_workshop` (`OrderWorkshopId`),
+  KEY `IDX_orderproduct_product` (`ProductId`),
+  CONSTRAINT `FK_orderproduct_orderworkshop` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_orderproduct_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+
 
 -- Insert data
 INSERT INTO `workshop` VALUES 
@@ -127,7 +146,7 @@ INSERT INTO stock VALUES
   (1, 1, 1.00),
   (2, 2, 0.33),
   (2, 1, 0.33),
-  (2, 3, 0.33),
+  (2, 3, 0.5),
   (1, 4, 0.50);
 
 
@@ -137,3 +156,111 @@ INSERT INTO `orderworkshop` VALUES
 (13,3,5,1,25,3,'3 mbo',NULL),
 (14,4,20,1,20,2,'2 Mavo',NULL),
 (15,4,17,1,20,2,'2 Mavo',NULL);
+
+INSERT INTO orderproduct VALUES 
+  (12, 1, 100);
+
+
+DELIMITER //
+CREATE TRIGGER trg_insert_orderworkshop
+AFTER INSERT ON orderworkshop
+FOR EACH ROW
+BEGIN
+  DECLARE OrderWorkshopId INT;
+  DECLARE Product_Id INT;
+  DECLARE Participant_Multiplier DECIMAL(5,2);
+  DECLARE Quantity INT;
+
+  -- Declare variables for cursor handling
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE cur_product CURSOR FOR
+    SELECT s.ProductId, s.ParticipantMultiplier
+    FROM stock s
+    WHERE s.WorkshopId = NEW.WorkshopId;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
+
+  -- Open the cursor
+  OPEN cur_product;
+
+  read_loop: LOOP
+    FETCH cur_product INTO Product_Id, Participant_Multiplier;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    SET Quantity = NEW.ParticipantCount * Participant_Multiplier;
+
+    INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_Id, Quantity);
+  END LOOP;
+
+  CLOSE cur_product;
+
+END //
+DELIMITER ;
+
+
+
+-- DELIMITER //
+-- CREATE TRIGGER trg_insert_orderworkshop
+-- AFTER INSERT ON orderworkshop
+-- FOR EACH ROW
+-- BEGIN
+--   DECLARE OrderWorkshopId INT;
+--   DECLARE Product_Id INT;
+
+--   -- Declare variables for cursor handling
+--   DECLARE done INT DEFAULT FALSE;
+--   DECLARE cur_product CURSOR FOR
+--     SELECT ProductId
+--     FROM stock
+--     WHERE WorkshopId = NEW.WorkshopId;
+
+--   -- Declare handler for not found condition
+--   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+--   SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
+
+--   -- Open the cursor
+--   OPEN cur_product;
+
+--   -- Fetch rows from the cursor and insert into orderproduct table
+--   read_loop: LOOP
+--     FETCH cur_product INTO Product_Id;
+--     IF done THEN
+--       LEAVE read_loop;
+--     END IF;
+
+--     INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_id, 69);
+--   END LOOP;
+
+--   -- Close the cursor
+--   CLOSE cur_product;
+
+-- END //
+-- DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
