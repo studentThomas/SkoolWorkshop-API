@@ -15,4 +15,8 @@ router.get('/workshop', workshopController.getWorkshops);
 //UC503 Delete Workshop
 router.delete('/workshop/:workshopId', workshopController.deleteWorkshop);
 
+//UC504 Get Workshop by Id
+router.get('/workshop/:workshopId', workshopController.getWorkshopById);
+
+
 module.exports = router;
