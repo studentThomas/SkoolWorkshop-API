@@ -129,18 +129,18 @@ const stockController = {
               const mailOptions = {
                 from: 'twa.vermeulen@student.avans.nl',
                 to: 'gjj.kooy@student.avans.nl', //info@skoolworkshop.nl
-                subject: `Low quantity "${productName}"`,
-                text: `The quantity of product "${productName}" is low. Current quantity: ${quantity}`
+                subject: `Lage voorraad "${productName}"`,
+                text: `De voorraad van "${productName}" is laag. Huidige voorraad: ${quantity}`
               };
 
                 // Send the email
-              // transporter.sendMail(mailOptions, (error, info) => {
-              //   if (error) {
-              //     console.error('Error sending email:', error);
-              //   } else {
-              //     console.log('Email sent:', info.response);
-              //   }
-              // });
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  console.error('Error sending email:', error);
+                } else {
+                  console.log('Email sent:', info.response);
+                }
+              });
 
             } else {
               res.status(200).json({
