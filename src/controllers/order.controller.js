@@ -40,7 +40,7 @@ const orderController = {
     //UC-602 Get Orders
     getOrders: (req, res, next) => {
         const sqlStatement = 'SELECT * FROM orderproduct';
-
+    
         pool.getConnection(function (err, conn) {
             if (err) {
                 return next({
@@ -48,7 +48,7 @@ const orderController = {
                     message: err.message
                 });
             }
-
+    
             conn.query(sqlStatement, (err, results) => {
                 if (err) {
                     return next({
@@ -56,16 +56,63 @@ const orderController = {
                         message: err.message
                     });
                 }
+    
+                const groupedOrders = results.reduce((acc, curr) => {
+                    const orderWorkshopId = curr.OrderWorkshopId;
+                    if (!acc[orderWorkshopId]) {
+                        acc[orderWorkshopId] = {
+                            OrderWorkshopId: orderWorkshopId,
+                            products: []
+                        };
+                    }
+                    acc[orderWorkshopId].products.push({
+                        ProductId: curr.ProductId,
+                        Quantity: curr.Quantity
+                    });
+                    return acc;
+                }, {});
+    
+                const orders = Object.values(groupedOrders);
+    
                 res.status(200).json({
                     status: 200,
                     message: 'Orders retrieved',
-                    data: results
+                    data: orders
                 });
             });
-
+    
             pool.releaseConnection(conn);
         });
     }
+    
+    // getOrders: (req, res, next) => {
+    //     const sqlStatement = 'SELECT * FROM orderproduct';
+
+    //     pool.getConnection(function (err, conn) {
+    //         if (err) {
+    //             return next({
+    //                 status: 409,
+    //                 message: err.message
+    //             });
+    //         }
+
+    //         conn.query(sqlStatement, (err, results) => {
+    //             if (err) {
+    //                 return next({
+    //                     status: 409,
+    //                     message: err.message
+    //                 });
+    //             }
+    //             res.status(200).json({
+    //                 status: 200,
+    //                 message: 'Orders retrieved',
+    //                 data: results
+    //             });
+    //         });
+
+    //         pool.releaseConnection(conn);
+    //     });
+    // }
    
 
 
