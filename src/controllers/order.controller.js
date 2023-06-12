@@ -62,6 +62,7 @@ const orderController = {
                     if (!acc[orderWorkshopId]) {
                         acc[orderWorkshopId] = {
                             OrderWorkshopId: orderWorkshopId,
+                            WorkshopId: curr.WorkshopId,
                             products: []
                         };
                     }
@@ -85,38 +86,6 @@ const orderController = {
         });
     }
     
-    // getOrders: (req, res, next) => {
-    //     const sqlStatement = 'SELECT * FROM orderproduct';
-
-    //     pool.getConnection(function (err, conn) {
-    //         if (err) {
-    //             return next({
-    //                 status: 409,
-    //                 message: err.message
-    //             });
-    //         }
-
-    //         conn.query(sqlStatement, (err, results) => {
-    //             if (err) {
-    //                 return next({
-    //                     status: 409,
-    //                     message: err.message
-    //                 });
-    //             }
-    //             res.status(200).json({
-    //                 status: 200,
-    //                 message: 'Orders retrieved',
-    //                 data: results
-    //             });
-    //         });
-
-    //         pool.releaseConnection(conn);
-    //     });
-    // }
-   
-
-
-  
 
   };
   
