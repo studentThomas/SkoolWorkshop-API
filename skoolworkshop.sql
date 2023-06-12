@@ -166,34 +166,36 @@ CREATE TRIGGER trg_insert_orderworkshop
 AFTER INSERT ON orderworkshop
 FOR EACH ROW
 BEGIN
-  DECLARE OrderWorkshopId INT;
   DECLARE Product_Id INT;
   DECLARE Participant_Multiplier DECIMAL(5,2);
+  DECLARE Is_Reusable boolean;
   DECLARE Quantity INT;
 
-  -- Declare variables for cursor handling
+
   DECLARE done INT DEFAULT FALSE;
   DECLARE cur_product CURSOR FOR
-    SELECT s.ProductId, s.ParticipantMultiplier
+    SELECT s.ProductId, s.ParticipantMultiplier, p.Reusable
     FROM stock s
+    JOIN product p ON p.Id = s.ProductId
     WHERE s.WorkshopId = NEW.WorkshopId;
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-  SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
-
-  -- Open the cursor
   OPEN cur_product;
 
   read_loop: LOOP
-    FETCH cur_product INTO Product_Id, Participant_Multiplier;
+    FETCH cur_product INTO Product_Id, Participant_Multiplier, Is_Reusable;
     IF done THEN
       LEAVE read_loop;
     END IF;
 
     SET Quantity = NEW.ParticipantCount * Participant_Multiplier;
 
-    INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_Id, Quantity);
+     IF Is_Reusable = 0 THEN
+      SET Quantity = Quantity * NEW.RoundCount;
+    END IF;
+
+    INSERT INTO orderproduct VALUES (NEW.Id, Product_Id, Quantity);
   END LOOP;
 
   CLOSE cur_product;
@@ -202,45 +204,6 @@ END //
 DELIMITER ;
 
 
-
--- DELIMITER //
--- CREATE TRIGGER trg_insert_orderworkshop
--- AFTER INSERT ON orderworkshop
--- FOR EACH ROW
--- BEGIN
---   DECLARE OrderWorkshopId INT;
---   DECLARE Product_Id INT;
-
---   -- Declare variables for cursor handling
---   DECLARE done INT DEFAULT FALSE;
---   DECLARE cur_product CURSOR FOR
---     SELECT ProductId
---     FROM stock
---     WHERE WorkshopId = NEW.WorkshopId;
-
---   -- Declare handler for not found condition
---   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
---   SELECT Id INTO OrderWorkshopId FROM orderworkshop WHERE Id = NEW.Id;
-
---   -- Open the cursor
---   OPEN cur_product;
-
---   -- Fetch rows from the cursor and insert into orderproduct table
---   read_loop: LOOP
---     FETCH cur_product INTO Product_Id;
---     IF done THEN
---       LEAVE read_loop;
---     END IF;
-
---     INSERT INTO orderproduct VALUES (OrderWorkshopId, Product_id, 69);
---   END LOOP;
-
---   -- Close the cursor
---   CLOSE cur_product;
-
--- END //
--- DELIMITER ;
 
 
 
