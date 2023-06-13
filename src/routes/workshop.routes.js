@@ -12,7 +12,10 @@ router.post('/workshop', workshopController.createWorkshop);
 //UC502 Get Workshops
 router.get('/workshop', workshopController.getWorkshops);
 
-//UC503 Delete Workshop
+//UC503 Update Workshop
+router.put('/workshop/:workshopId', workshopController.updateWorkshop);
+
+//UC504 Delete Workshop
 router.delete('/workshop/:workshopId', workshopController.deleteWorkshop);
 
 module.exports = router;

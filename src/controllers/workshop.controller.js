@@ -90,7 +90,59 @@ const workshopController = {
     });
   },
 
-  //UC-503 Delete Workshop
+  //UC-503 Update Workshop
+  updateWorkshop: (req, res, next) => {
+    const workshopId = req.params.workshopId;
+    const workshop = req.body;
+    const sqlCheck = `SELECT * FROM workshop WHERE Id = ?`;
+    const sqlStatement = `UPDATE workshop SET ? WHERE Id = ?`;
+
+    pool.getConnection(function (err, conn) {
+      if (err) {
+        return next({
+          status: 409,
+          message: err.message
+        });
+      }
+
+      conn.query(sqlCheck, [workshopId], (error, results) => {
+        if (error) {
+          return next({
+            status: 409,
+            message: error
+          });
+        }
+
+        if (results.length == 0) {
+          return next({
+            status: 404,
+            message: `Workshop not found`
+          });
+        }
+
+        conn.query(sqlStatement, [workshop, workshopId], (error, results) => {
+          if (error) {
+            return next({
+              status: 409,
+              message: error
+            });
+          }
+
+          if (results) {
+            res.send({
+              status: 200,
+              message: `Workshop updated`,
+              data: workshop
+            });
+          }
+
+          pool.releaseConnection(conn);
+        });
+      });
+    });
+  },
+
+  //UC-504 Delete Workshop
   deleteWorkshop: (req, res, next) => {
     const workshopId = req.params.workshopId;
     const sqlCheck = `SELECT * FROM workshop WHERE Id = ?`;
