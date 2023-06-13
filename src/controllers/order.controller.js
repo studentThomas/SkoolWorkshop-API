@@ -40,7 +40,7 @@ const orderController = {
 
     //UC-602 Get Orders
     getOrders: (req, res, next) => {
-        const sqlStatement = 'SELECT * FROM orderproduct';
+        const sqlStatement = 'SELECT * FROM orderproduct ORDER BY OrderWorkshopId ASC';
     
         pool.getConnection(function (err, conn) {
             if (err) {
