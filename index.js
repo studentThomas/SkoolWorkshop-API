@@ -5,6 +5,7 @@ const stockRouter = require('./src/routes/stock.routes');
 const workshopRouter = require('./src/routes/workshop.routes');
 const userRouter = require('./src/routes/user.routes');
 const orderRouter = require('./src/routes/order.routes');
+const categoryRouter = require('./src/routes/category.routes');
 const logger = require('./src/util/logger').logger;
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,6 +37,7 @@ app.use('/api', stockRouter);
 app.use('/api', workshopRouter);
 app.use('/api', userRouter);
 app.use('/api', orderRouter);
+app.use('/api', categoryRouter);
 
 app.use('*', (req, res) => {
   logger.error('Endpoint not found');
