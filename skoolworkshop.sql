@@ -83,7 +83,6 @@ CREATE TABLE `orderproduct` (
   `WorkshopId` int NOT NULL,
   `ProductId` int NOT NULL,
   `Quantity` int  NULL,
-  `Status` boolean NOT NULL DEFAULT '0',
   PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
   KEY `IDX_orderproduct_order` (`OrderWorkshopId`),
   KEY `IDX_orderproduct_workshop` (`WorkshopId`),
@@ -162,7 +161,7 @@ INSERT INTO `orderworkshop` VALUES
 (15,4,17,1,20,2,'2 Mavo',NULL);
 
 INSERT INTO orderproduct VALUES 
-  (12, 1, 1, 100, '1');
+  (12, 1, 1, 100);
 
 
 DELIMITER //
@@ -199,7 +198,7 @@ BEGIN
       SET Quantity = Quantity * NEW.RoundCount;
     END IF;
 
-    INSERT INTO orderproduct VALUES (NEW.Id, NEW.WorkshopId, Product_Id, Quantity, "0");
+    INSERT INTO orderproduct VALUES (NEW.Id, NEW.WorkshopId, Product_Id, Quantity);
   END LOOP;
 
   CLOSE cur_product;

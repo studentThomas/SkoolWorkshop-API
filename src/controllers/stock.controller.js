@@ -48,7 +48,6 @@ const stockController = {
   //UC-302 Update Stock
   updateStock: (req, res, next) => {
     const productId = req.params.productId;
-    logger.info(`Product id: ${productId}`);
     let quantity = Number(req.body.quantity);
 
     let transporter = nodemailer.createTransport({

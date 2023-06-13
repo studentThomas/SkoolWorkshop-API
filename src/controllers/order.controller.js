@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../util/mysql-db');
-const { updateStock } = require('./stock.controller');
 const logger = require('../util/logger').logger;
 const jwtSecretKey = process.env.JWT_SECRET;
 
@@ -64,7 +63,6 @@ const orderController = {
                         acc[orderWorkshopId] = {
                             OrderWorkshopId: orderWorkshopId,
                             WorkshopId: curr.WorkshopId,
-                            Status: curr.Status,
                             products: []
                         };
                     }
@@ -86,41 +84,7 @@ const orderController = {
     
             pool.releaseConnection(conn);
         });
-    },
-
-    //UC-603 Update Order
-    updateOrder: (req, res, next) => {
-        const orderWorkshopId = req.params.orderWorkshopId;
-        const sqlStatement = 'UPDATE orderproduct SET Status = 1 WHERE OrderWorkshopId = ?';
-
-        pool.getConnection(function (err, conn) {
-            if (err) {
-                return next({
-                    status: 409,
-                    message: err.message
-                });
-            }
-        
-            conn.query(sqlStatement, [orderWorkshopId], (err, results) => {
-                if (err) {
-                    return next({
-                        status: 409,
-
-                        message: err.message
-                    });
-
-                }
-                res.status(200).json({
-                    status: 200,
-                    message: 'Order updated',
-                    data: 1
-                });
-            });
-            pool.releaseConnection(conn);
-        });
-    },
-
-
+    }
     
 
   };

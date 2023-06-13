@@ -13,10 +13,6 @@ router.post('/order', orderController.createOrder);
 //UC602 Get Orders
 router.get('/order', orderController.getOrders);
 
-//UC603 Update Order
-router.put('/order/:orderWorkshopId', orderController.updateOrder);
-
-
 
 
 
