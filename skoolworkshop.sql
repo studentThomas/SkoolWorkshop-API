@@ -80,12 +80,15 @@ CREATE TABLE `stock` (
 
 CREATE TABLE `orderproduct` (
   `OrderWorkshopId` int NOT NULL,
+  `WorkshopId` int NOT NULL,
   `ProductId` int NOT NULL,
   `Quantity` int  NULL,
   PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
-  KEY `IDX_orderproduct_workshop` (`OrderWorkshopId`),
+  KEY `IDX_orderproduct_order` (`OrderWorkshopId`),
+  KEY `IDX_orderproduct_workshop` (`WorkshopId`),
   KEY `IDX_orderproduct_product` (`ProductId`),
-  CONSTRAINT `FK_orderproduct_orderworkshop` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_orderproduct_order` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_orderproduct_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `orderworkshop` (`WorkshopId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_orderproduct_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -158,7 +161,7 @@ INSERT INTO `orderworkshop` VALUES
 (15,4,17,1,20,2,'2 Mavo',NULL);
 
 INSERT INTO orderproduct VALUES 
-  (12, 1, 100);
+  (12, 1, 1, 100);
 
 
 DELIMITER //
@@ -195,7 +198,7 @@ BEGIN
       SET Quantity = Quantity * NEW.RoundCount;
     END IF;
 
-    INSERT INTO orderproduct VALUES (NEW.Id, Product_Id, Quantity);
+    INSERT INTO orderproduct VALUES (NEW.Id, NEW.WorkshopId, Product_Id, Quantity);
   END LOOP;
 
   CLOSE cur_product;
