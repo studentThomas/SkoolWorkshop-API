@@ -1,13 +1,27 @@
-DROP TABLE IF EXISTS `stock`;
 DROP TABLE IF EXISTS `orderproduct`;
-DROP TABLE IF EXISTS `user`;
-DROP TABLE IF EXISTS `product`;
-DROP TABLE IF EXISTS `userorderworkshop`;
 DROP TABLE IF EXISTS `orderworkshop`;
-DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `stock`;
+DROP TABLE IF EXISTS `notifications`;
 DROP TABLE IF EXISTS `workshop`;
+DROP TABLE IF EXISTS `product`;
 DROP TABLE IF EXISTS `productcategory`;
+DROP TABLE IF EXISTS `user`;
 
+CREATE TABLE `user` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `EmailAdress` varchar(200) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `FirstName` varchar(255) NOT NULL,
+  `PhoneNumber` varchar(255) NOT NULL,
+  `IsAdmin` boolean NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `productcategory` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `workshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -20,23 +34,7 @@ CREATE TABLE `workshop` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE productcategory (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `Name` varchar(100) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE `user` (
-  `Id` int NOT NULL AUTO_INCREMENT,
-  `EmailAdress` varchar(200) NOT NULL,
-  `Password` varchar(255) NOT NULL,
-  `FirstName` varchar(255) NOT NULL,
-  `PhoneNumber` varchar(255) NOT NULL,
-  `IsAdmin` boolean NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE product (
+CREATE TABLE `product` (
   `Id` int NOT NULL AUTO_INCREMENT,
   `CategoryId` int,
   `Name` varchar(200) NOT NULL,
@@ -45,11 +43,27 @@ CREATE TABLE product (
   `Image` varchar(255) NOT NULL,
   `Reusable` boolean NOT NULL DEFAULT '0',
   `Quantity` int NOT NULL,
+  `minStock` int DEFAULT '0',
   PRIMARY KEY (`Id`),
   CONSTRAINT `FK_product_productcategory` FOREIGN KEY (`CategoryId`) REFERENCES `productcategory` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `stock` (
+  `WorkshopId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `Quantity` int NOT NULL,
+  `ParticipantMultiplier` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`ProductId`),
+  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `orderproduct` (
+  `OrderId` int NOT NULL,
+  `ProductId` int NOT NULL,
+  `Quantity` int NOT NULL,
+  PRIMARY KEY (`OrderId`, `ProductId`),
+  CONSTRAINT `FK_orderproduct_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `orderworkshop` (
   `Id` int NOT NULL AUTO_INCREMENT,
@@ -58,101 +72,75 @@ CREATE TABLE `orderworkshop` (
   `TeacherCount` int NOT NULL,
   `ParticipantCount` int NOT NULL,
   `RoundCount` int NOT NULL,
-  `SubGroup` longtext CHARACTER SET utf8mb4,
-  `WorkshopInfo` longtext CHARACTER SET utf8mb4,
+  `SubGroup` varchar(255) NOT NULL,
+  `WorkshopInfo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `IX_OrderWorkshop_WorkshopId` (`WorkshopId`),
-  CONSTRAINT `FK_OrderWorkshop_Workshop_WorkshopId` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-
-CREATE TABLE `stock` (
-  `WorkshopId` int NOT NULL,
-  `ProductId` int NOT NULL,
-  `ParticipantMultiplier` decimal(5,2) NOT NULL,
-  PRIMARY KEY (`WorkshopId`, `ProductId`),
-  KEY `IDX_stock_workshop` (`WorkshopId`),
-  KEY `IDX_stock_product` (`ProductId`),
-  CONSTRAINT `FK_stock_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stock_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_orderworkshop_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `workshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `orderproduct` (
-  `OrderWorkshopId` int NOT NULL,
-  `WorkshopId` int NOT NULL,
+CREATE TABLE `notifications` (
+  `Id` int NOT NULL AUTO_INCREMENT,
   `ProductId` int NOT NULL,
-  `Quantity` int  NULL,
-  `Status` boolean NOT NULL DEFAULT '0',
-  PRIMARY KEY (`OrderWorkshopId`, `ProductId`),
-  KEY `IDX_orderproduct_order` (`OrderWorkshopId`),
-  KEY `IDX_orderproduct_workshop` (`WorkshopId`),
-  KEY `IDX_orderproduct_product` (`ProductId`),
-  CONSTRAINT `FK_orderproduct_order` FOREIGN KEY (`OrderWorkshopId`) REFERENCES `orderworkshop` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_orderproduct_workshop` FOREIGN KEY (`WorkshopId`) REFERENCES `orderworkshop` (`WorkshopId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_orderproduct_product` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `Title` varchar(255) NOT NULL,
+  `Message` varchar(255) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `IX_Notifications_ProductId` (`ProductId`),
+  CONSTRAINT `FK_Notifications_Product_ProductId` FOREIGN KEY (`ProductId`) REFERENCES `product` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-
 
 -- Insert data
 INSERT INTO `workshop` VALUES 
-(1,'Graffiti','BeeldendeKunst','','',1,'image.png'),
-(2,'StopMotion','BeeldendeKunst','','',1,'image.png'),
-(3,'LightGraffiti','BeeldendeKunst','','',1,'image.png'),
-(4,'TShirtOntwerpen','BeeldendeKunst','','',1,'image.png'),
-(5,'Hiphop','Dans','','Geluidspeaker',1,'image.png'),
-(6,'Stepping','Dans','','',1,'image.png'),
-(7,'Flashmob','Dans','','',1,'image.png'),
-(8,'Streetdance','Dans','','',1,'image.png'),
-(9,'Breakdance','Dans','','',1,'image.png'),
-(10,'DanceFit','Dans','','',1,'image.png'),
-(11,'ModerneDans','Dans','','',1,'image.png'),
-(12,'Vloggen','Media','','',1,'image.png'),
-(13,'VideoClip','Media','','',1,'image.png'),
-(14,'Smartphone','Media','','',1,'image.png'),
-(15,'Photoshop','Media','','',1,'image.png'),
-(16,'CaribbeanDrums','Muziek','','',1,'image.png'),
-(17,'Popstar','Muziek','','',1,'image.png'),
-(18,'LiveLooping','Muziek','','',1,'image.png'),
-(19,'GhettoDrums','Muziek','','',1,'image.png'),
-(20,'Rap','Muziek','','Mobile studio',1,'image.png'),
-(21,'Percussie','Muziek','','',1,'image.png'),
-(22,'Kickboksen','Sport','','',1,'image.png'),
-(23,'Zelfverdediging','Sport','','',1,'image.png'),
-(24,'PannaVoetbal','Sport','','',1,'image.png'),
-(25,'FreeRunning','Sport','','',1,'image.png'),
-(26,'Bootcamp','Sport','','',1,'image.png'),
-(27,'SoapActeren','Theater','','- Soap scenes\n- Camera',1,'image.png'),
-(28,'StageFighting','Theater','','',1,'image.png'),
-(29,'Theatersport','Theater','','',1,'image.png'),
-(30,'CombiWorkshop','Combi','','',1,'image.png');
+(1,'Graffiti','BeeldendeKunst','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2021/04/Skool-Workshop-Workshop-Graffiti-1024x683.jpg'),
+(2,'Stop Motion','BeeldendeKunst','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Stopmotion-Workshop-op-school-1024x652.jpg'),
+(3,'Light Graffiti','BeeldendeKunst','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Light-Graffiti-Workshop-op-school-1024x652.jpg'),
+(4,'TShirt Ontwerpen','BeeldendeKunst','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2020/01/T-Shirt-Ontwerpen-Workshop-op-school-1024x652-1.jpg'),
+(5,'Hiphop','Dans','','Geluidspeaker',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2021/01/6L6A9734-1024x683.jpg'),
+(6,'Stepping','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Stepping-Workshop-op-school-1024x652.jpg'),
+(7,'Flashmob','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Flashmob-Workshop-op-school-1024x652.jpg'),
+(8,'Streetdance','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Streetdance-Workshop-op-school-1024x652.jpg'),
+(9,'Breakdance','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Breakdance-Workshops-op-school-1024x652.jpg'),
+(10,'DanceFit','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Moderne-Dans-Workshop-op-school-1024x652.jpg'),
+(11,'Moderne Dans','Dans','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Moderne-Dans-Workshop-op-school-1024x652.jpg'),
+(12,'Vloggen','Media','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Vlog-Workshop-op-school-1024x652.jpg'),
+(13,'VideoClip','Media','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Videoclip-Workshop-op-school-1024x652.jpg'),
+(14,'Smartphone','Media','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Workshop-Smartphone-Fotografie-op-school-1024x652.jpg'),
+(15,'Photoshop','Media','','',1,'https://interestedvideos.com/wp-content/uploads/2023/01/adobe-photoshop-tutorial-Dr08P.jpg'),
+(16,'Caribbean Drums','Muziek','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2020/10/Caribbean-Drums-kopie-1024x652.jpg'),
+(17,'Popstar','Muziek','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Popstar-Workshop-op-school-1024x652.jpg'),
+(18,'LiveLooping','Muziek','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Live-Looping-Workshop-op-school-1024x652.jpg'),
+(19,'Ghetto Drums','Muziek','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Drum-Workshop-op-school-1024x652.jpg'),
+(20,'Rap','Muziek','','Mobile studio',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2020/09/Jongens-rap-e1643291580110-1024x653.jpg'),
+(21,'Percussie','Muziek','','',1,'https://1001.pics/img/300x0/1001/tags/workshops/muziek-workshops/percussie-workshop.fpb586550d.jpg'),
+(22,'Kickboksen','Sport','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Kickboks-Workshop-op-school-1024x652.jpg'),
+(23,'Zelfverdediging','Sport','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Zelfverdediging-Workshop-op-school-1024x652.jpg'),
+(24,'PannaVoetbal','Sport','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Pannavoetbal-Workshop-op-school_2-1024x652.jpg'),
+(25,'FreeRunning','Sport','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Freerunning-Workshop-op-school-1024x652.jpg'),
+(26,'Bootcamp','Sport','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Bootcamp-Workshop-op-school-1024x652.jpg'),
+(27,'Soap Acteren','Theater','','- Soap scenes\n- Camera',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Acteer-Workshop-op-school-1024x652.jpg'),
+(28,'StageFighting','Theater','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Stage-Fighting-Workshop-op-school_1-1024x652.jpg'),
+(29,'Theatersport','Theater','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2019/12/Theater.jpg'),
+(30,'CombiWorkshop','Combi','','',1,'https://skoolworkshop.nl/wp-content/uploads/2019/11/Skool-homepage-1.jpg'),
+(31,'DJ Skills','Muziek','','',1,'https://cdn-bnege.nitrocdn.com/MVgfApSlnIZMEMtTrPfeVWWDRvGvEHus/assets/images/optimized/rev-aeea760/wp-content/uploads/2023/04/Workshop-DJ-Skiils-1024x683.jpg');
 
-INSERT INTO productcategory VALUES 
+INSERT INTO `productcategory` VALUES 
   (1, 'spuitbussen'),
   (2, 'digitaal');
 
-INSERT INTO product VALUES 
-  (1, 1, 'spuitbus blauw', 'het is blauw', 1234, 'URL', 0, 50),
-  (2, 1, 'spuitbus geel', 'het is geel', 2345, 'URL', 0, 10),
-  (3, 2, 'selfiestick', 'description', 4321, 'URL', 1, 100),
-  (4, 2, 'telefoon', 'telefoon', 4321, 'URL', 1, 30);
-
-
+INSERT INTO `product` VALUES 
+  (1, 1, 'spuitbus blauw', 'het is blauw', 1234, 'URL', 0, 50, 0),
+  (2, 1, 'spuitbus geel', 'het is geel', 2345, 'URL', 0, 10, 0),
+  (3, 2, 'selfiestick', 'description', 4321, 'URL', 1, 100, 0),
+  (4, 2, 'telefoon', 'telefoon', 4321, 'URL', 1, 30, 0);
 
 INSERT INTO `user` VALUES 
   (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', '1'),
   (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', '0');
 
-
-INSERT INTO stock VALUES 
-  (1, 1, 1.00),
-  (2, 2, 0.33),
-  (2, 1, 0.33),
-  (2, 3, 0.5),
-  (1, 4, 0.50);
-
+INSERT INTO `stock` VALUES 
+  (1, 1, 10, 1.00),
+  (2, 2, 10, 0.33),
+  (2, 3, 10, 0.5),
+  (1, 4, 10, 0.50);
 
 INSERT INTO `orderworkshop` VALUES 
 (11,3,1,1,25,3,'3 mbo',NULL),
@@ -161,9 +149,8 @@ INSERT INTO `orderworkshop` VALUES
 (14,4,20,1,20,2,'2 Mavo',NULL),
 (15,4,17,1,20,2,'2 Mavo',NULL);
 
-INSERT INTO orderproduct VALUES 
-  (12, 1, 1, 100, '1');
-
+INSERT INTO `orderproduct` VALUES 
+  (12, 1, 10);
 
 DELIMITER //
 CREATE TRIGGER trg_insert_orderworkshop
@@ -199,7 +186,7 @@ BEGIN
       SET Quantity = Quantity * NEW.RoundCount;
     END IF;
 
-    INSERT INTO orderproduct VALUES (NEW.Id, NEW.WorkshopId, Product_Id, Quantity, "0");
+    INSERT INTO orderproduct VALUES (NEW.Id, NEW.WorkshopId, Product_Id, Quantity);
   END LOOP;
 
   CLOSE cur_product;
@@ -207,27 +194,24 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE TRIGGER product_update_notifications
+AFTER UPDATE ON product
+FOR EACH ROW
+BEGIN
+    DECLARE ExistingNotificationId INT;
 
+    SET ExistingNotificationId = (SELECT Id FROM notifications WHERE ProductId = NEW.Id);
 
+    -- If quantity is less than minStock and there's no existing notification
+    IF NEW.Quantity < NEW.minStock AND ExistingNotificationId IS NULL THEN
+        INSERT INTO notifications(ProductId, Title, Message)
+        VALUES (NEW.Id, 'Voorraad Alert!', CONCAT('Product ', NEW.Id, ' Let op: de voorraad van ', NEW.Name, ' is bijna op. '));
 
+    -- Else if quantity is equal or more than minStock and there's an existing notification
+    ELSEIF NEW.Quantity >= NEW.minStock AND ExistingNotificationId IS NOT NULL THEN
+        DELETE FROM notifications WHERE Id = ExistingNotificationId;
+    END IF;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+END //
+DELIMITER ;
