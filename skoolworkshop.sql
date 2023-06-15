@@ -13,7 +13,7 @@ CREATE TABLE `user` (
   `Password` varchar(255) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
   `PhoneNumber` varchar(255) NOT NULL,
-  `IsAdmin` boolean NOT NULL DEFAULT '0',
+  `Role` varchar(50) NOT NULL DEFAULT 'stagiair',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -133,8 +133,8 @@ INSERT INTO `product` VALUES
   (4, 2, 'telefoon', 'telefoon', 4321, 'URL', 1, 30, 0);
 
 INSERT INTO `user` VALUES 
-  (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', '1'),
-  (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', '0');
+  (1, 'admin@gmail.com', 'secret', 'Levi', '06123456789', 'admin'),
+  (2, 'thomas@gmail.com', 'secret123', 'Thomas', '06987654321', 'moderator');
 
 INSERT INTO `stock` VALUES 
   (1, 1, 10, 1.00),
