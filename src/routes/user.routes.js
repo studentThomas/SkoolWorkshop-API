@@ -9,4 +9,7 @@ router.use(cors());
 //UC201 Create User
 router.post('/user', userController.createUser);
 
+//UC202 Get User
+router.get('/user', userController.getUsers);
+
 module.exports = router;

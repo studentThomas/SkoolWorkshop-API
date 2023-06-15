@@ -52,6 +52,38 @@ const userController = {
       });
     });
   },
+
+  //UC-202 Get User
+  getUsers: (req, res, next) => {
+    const sqlStatement = `SELECT * FROM user`;
+
+    pool.getConnection((err, conn) => {
+      if (err) {
+        next({
+          status: 500,
+          message: err.message,
+        });
+      }
+
+      conn.query(sqlStatement, (error, results) => {
+        if (error) {
+          next({
+            status: 409,
+            message: error,
+          });
+        }
+
+        if (results) {
+          res.send({
+            status: 200,
+            message: `Users retrieved`,
+            data: results,
+          });
+        }
+      });
+      pool.releaseConnection(conn);
+    });
+  }
 };
 
 module.exports = userController;
