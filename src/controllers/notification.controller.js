@@ -31,9 +31,9 @@ const notificationController = {
             data: notifications
           });
         } else {
-          res.status(404).json({
-            status: 404,
-            message: 'No notifications'
+          res.status(200).json({
+            status: 200,
+            message: 'There are no notifications'
           });
         }
         pool.releaseConnection(conn);
