@@ -41,6 +41,8 @@ module.exports = {
               });
 
               let { password, isActive, ...userWithoutPassword } = user;
+              logger.info(`User ${user.Id} logged in`);
+              logger.info(`Token: ${token}`);
               res.send({
                 status: 200,
                 message: 'User logged in',
