@@ -6,7 +6,7 @@ const notificationController = require('../controllers/notification.controller')
 router.use(express.json());
 router.use(cors());
 
-router.get('/notifications', notificationController.getNotifications);
+router.get('/notification', notificationController.getNotifications);
 
 
 module.exports = router;

@@ -28,7 +28,7 @@ const notificationController = {
           res.status(200).json({
             status: 200,
             message: 'notifications are retrieved',
-            data: categories
+            data: notifications
           });
         } else {
           res.status(404).json({
