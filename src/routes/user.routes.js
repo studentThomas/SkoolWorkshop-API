@@ -12,4 +12,10 @@ router.post('/user', userController.createUser);
 //UC202 Get User
 router.get('/user', userController.getUsers);
 
+//UC203 Update User
+router.put('/user/:userId', userController.updateUser);
+
+//UC204 Delete User
+router.delete('/user/:userId', userController.deleteUser);
+
 module.exports = router;
