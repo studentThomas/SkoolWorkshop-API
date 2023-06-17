@@ -5,10 +5,34 @@ const chaiHttp = require('chai-http');
 const logger = require('../../src/util/logger').logger;
 const server = require('../../index');
 const dbconnection = require('../../src/util/mysql-db');
-const queries = require('../../src/util/queries');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
+
+const CLEAR_USER_TABLE = 'DELETE IGNORE FROM `user`;';
+const CLEAR_STOCK_TABLE = 'DELETE IGNORE FROM `stock`;';
+const CLEAR_PRODUCT_TABLE = 'DELETE IGNORE FROM `product`;';
+const CLEAR_WORKSHOP_TABLE = 'DELETE IGNORE FROM `workshop`;';
+const CLEAR_DB = CLEAR_USER_TABLE + CLEAR_STOCK_TABLE + CLEAR_PRODUCT_TABLE + CLEAR_WORKSHOP_TABLE;
+
+const INSERT_USER =
+  'INSERT INTO `user` (`Id`, `EmailAdress`, `Password`, `FirstName`, `PhoneNumber` ) VALUES' +
+  '(1, "levikooy@gmail.com", "1234", "Levi", "0612345678"),' +
+  '(2, "thomas@gmail.com", "1234", "Thomas", "0612345678");';
+
+const INSERT_WORKSHOP =
+  'INSERT INTO `workshop` (`Id`, `Name`, `CategoryName`, `Description`, `Materials`, `Active`, `Image`) VALUES' +
+  '(1, "workshop1", "Category1", "description", "Materials", 1, "image"),' +
+  '(2, "workshop2", "Category2", "description", "Materials", 1, "image"),' +
+  '(3, "workshop3", "Category3", "description", "Materials", 1, "image");';
+
+const INSERT_PRODUCT =
+  'INSERT INTO `product` (`Id`, `Name`, `Description`, `Code`, `Image` ,`Quantity` ) VALUES' +
+  '(1, "spuitbus", "description", 123456, "image", 10),' +
+  '(2, "pencil", "description", 12345, "image", 10);';
+
+const INSERT_STOCK = 'INSERT INTO `stock` (`ProductId`, `WorkshopId`) VALUES' + '(1, 1),' + '(2, 1);';
 
 describe('Product API', () => {
   logger.info('Product API test started');
@@ -18,7 +42,7 @@ describe('Product API', () => {
         done(err);
         throw err;
       }
-      connection.query(queries.clearProductTable + queries.insertProduct, (error, result) => {
+      connection.query(CLEAR_DB + INSERT_USER + INSERT_WORKSHOP + INSERT_PRODUCT + INSERT_STOCK, (error, result) => {
         if (error) {
           done(error);
           throw error;
@@ -28,7 +52,8 @@ describe('Product API', () => {
       });
     });
   });
-  describe('UC-401 Add Product', () => {
+
+  describe('UC-401 Create Product', () => {
     it('TC-401-1 Product already exists', (done) => {
       chai
         .request(server)
@@ -36,8 +61,10 @@ describe('Product API', () => {
         .send({
           name: 'spuitbus',
           description: 'description',
-          code: 'code',
-          image: 'image'
+          code: 123456,
+          image: 'image',
+          quantity: 10,
+          workshopId: 1
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
@@ -55,7 +82,7 @@ describe('Product API', () => {
         .send({
           name: 'laptop',
           description: 'description',
-          code: 'code',
+          code: 12345,
           image: 'image',
           quantity: 10,
           workshopId: 1
@@ -75,7 +102,7 @@ describe('Product API', () => {
     it('TC-402-1 Products retrieved', (done) => {
       chai
         .request(server)
-        .get('/api/product/1')
+        .get('/api/product')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(200);
@@ -95,7 +122,7 @@ describe('Product API', () => {
         .send({
           name: 'laptop',
           description: 'description',
-          code: 'code',
+          code: 12345,
           image: 'image'
         })
         .end((err, res) => {

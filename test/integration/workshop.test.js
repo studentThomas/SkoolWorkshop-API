@@ -1,113 +1,99 @@
-process.env["DB_DATABASE"] = process.env.DB_DATABASE || "test";
+process.env['DB_DATABASE'] = process.env.DB_DATABASE || 'test';
 
-const chai = require("chai");
-const chaiHttp = require("chai-http");
-const logger = require("../../src/util/logger").logger;
-const server = require("../../index");
-const dbconnection = require("../../src/util/mysql-db");
-const queries = require("../../src/util/queries");
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const logger = require('../../src/util/logger').logger;
+const server = require('../../index');
+require('tracer').setLevel('error');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe("Workshop API", () => {
-  logger.info("Stock API test started");
-  beforeEach((done) => {
-    dbconnection.getConnection(function (err, connection) {
-      if (err) {
-        done(err);
-        throw err;
-      }
-      connection.query(
-        queries.clearWorkshopTable + queries.insertWorkshop,
-        (error, result) => {
-          if (error) {
-            done(error);
-            throw error;
-          }
-          dbconnection.releaseConnection(connection);
-          done();
-        }
-      );
-    });
-  });
-  describe("UC-501 Add Workshop", () => {
-    it("TC-501-1 Workshop already exists", (done) => {
+describe('Workshop API', () => {
+  logger.info('Stock API test started');
+  describe('UC-501 Create Workshop', () => {
+    it('TC-501-1 Workshop already exists', (done) => {
       chai
         .request(server)
-        .post("/api/workshop")
+        .post('/api/workshop')
         .send({
-          name: "workshop1",
-          description: "description",
-          image: "image",
+          name: 'workshop1',
+          categoryName: 'Category1',
+          description: 'description',
+          materials: 'Materials',
+          active: 1,
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(403);
-          res.body.should.be.an("object");
-          data.should.be.an("object").to.be.empty;
-          message.should.be.a("string").to.be.equal("Workshop already exists");
+          res.body.should.be.an('object');
+          data.should.be.an('object').to.be.empty;
+          message.should.be.a('string').to.be.equal('Workshop already exists');
           done();
         });
     });
-    it("TC-501-2 Workshop created", (done) => {
+    it('TC-501-2 Workshop created', (done) => {
       chai
         .request(server)
-        .post("/api/workshop")
+        .post('/api/workshop')
         .send({
-          name: "workshop3",
-          description: "description",
-          image: "image",
+          name: 'workshop4',
+          categoryName: 'Category4',
+          description: 'description',
+          materials: 'Materials',
+          active: 1,
+          image: 'image'
         })
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(201);
-          res.body.should.be.an("object");
-          data.should.be.an("object");
-          message.should.be.a("string").to.be.equal("Workshop created");
+          res.body.should.be.an('object');
+          data.should.be.an('object');
+          message.should.be.a('string').to.be.equal('Workshop created');
           done();
         });
     });
   });
-  describe("UC-502 Get Workshop", () => {
-    it("TC-502-1 Workshops succesfully retrieved", (done) => {
+  describe('UC-502 Get Workshop', () => {
+    it('TC-502-1 Workshops succesfully retrieved', (done) => {
       chai
         .request(server)
-        .get("/api/workshop")
+        .get('/api/workshop')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(200);
-          res.body.should.be.an("object");
-          data.should.be.an("array");
-          message.should.be.a("string").to.be.equal("Workshops are retrieved");
+          res.body.should.be.an('object');
+          data.should.be.an('array');
+          message.should.be.a('string').to.be.equal('Workshops are retrieved');
           done();
         });
     });
   });
-  describe("UC-503 Delete workshop", () => {
-    it("TC-503-1 Workshop not found", (done) => {
+  describe('UC-503 Delete workshop', () => {
+    it('TC-503-1 Workshop not found', (done) => {
       chai
         .request(server)
-        .delete("/api/workshop/0")
+        .delete('/api/workshop/0')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(404);
-          res.body.should.be.an("object");
-          data.should.be.an("object").to.be.empty;
-          message.should.be.a("string").to.be.equal("Workshop not found");
+          res.body.should.be.an('object');
+          data.should.be.an('object').to.be.empty;
+          message.should.be.a('string').to.be.equal('Workshop not found');
           done();
         });
     });
-    it("TC-503-2 Workshop deleted", (done) => {
+    it('TC-503-2 Workshop deleted', (done) => {
       chai
         .request(server)
-        .delete("/api/workshop/2")
+        .delete('/api/workshop/3')
         .end((err, res) => {
           let { status, message, data } = res.body;
           status.should.equal(200);
-          res.body.should.be.an("object");
-          data.should.be.an("object");
-          message.should.be.a("string").to.be.equal("Workshop deleted");
+          res.body.should.be.an('object');
+          data.should.be.an('object');
+          message.should.be.a('string').to.be.equal('Workshop deleted');
           done();
         });
     });

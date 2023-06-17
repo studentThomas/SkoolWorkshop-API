@@ -1,18 +1,25 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const cors = require("cors");
-const workshopController = require("../controllers/workshop.controller");
+const workshopController = require('../controllers/workshop.controller');
+const cors = require('cors');
 
 router.use(express.json());
 router.use(cors());
 
-//UC501
-router.post("/workshop", workshopController.createWorkshop);
+//UC501 Create Workshop
+router.post('/workshop', workshopController.createWorkshop);
 
-//UC502
-router.get("/workshop", workshopController.getWorkshops);
+//UC502 Get Workshops
+router.get('/workshop', workshopController.getWorkshops);
 
-//UC503
-router.delete("/workshop/:workshopId", workshopController.deleteWorkshop);
+//UC503 Update Workshop
+router.put('/workshop/:workshopId', workshopController.updateWorkshop);
+
+//UC504 Delete Workshop
+router.delete('/workshop/:workshopId', workshopController.deleteWorkshop);
+
+//UC504 Get Workshop by Id
+router.get('/workshop/:workshopId', workshopController.getWorkshopById);
+
 
 module.exports = router;

@@ -1,13 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const stockController = require("../controllers/stock.controller");
+const stockController = require('../controllers/stock.controller');
+const cors = require('cors');
 
 router.use(express.json());
+router.use(cors());
 
-//UC301
-router.get("/stock/:productId", stockController.getStock);
+//UC301 Get Stock
+router.get('/stock/:productId', stockController.getStock);
 
-//UC302
-router.put("/stock/:productId", stockController.updateStock);
+//UC302 Update Stock
+router.put('/stock/:productId', stockController.updateStock);
 
 module.exports = router;

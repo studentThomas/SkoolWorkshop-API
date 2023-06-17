@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/auth.controller');
 const cors = require('cors');
+const categoryController = require('../controllers/category.controller');
+
 router.use(express.json());
 router.use(cors());
 
-//UC-101 Login
-router.post('/login', controller.login);
+router.get('/categories', categoryController.getCategories);
+
 
 module.exports = router;
