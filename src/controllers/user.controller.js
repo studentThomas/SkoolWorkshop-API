@@ -167,7 +167,42 @@ const userController = {
       });
       pool.releaseConnection(conn);
     });
-  }
+  },
+
+    //UC-205 Get User by Id
+    getUserById: (req, res, next) => {
+      const userId = req.params.userId;
+      const sqlStatement = `SELECT * FROM user WHERE Id = ?`;
+  
+      pool.getConnection((err, conn) => {
+        if (err) {
+          next({
+            status: 500,
+            message: err.message,
+          });
+        }
+  
+        conn.query(sqlStatement, [userId], (error, results) => {
+          if (error) {
+            next({
+              status: 409,
+              message: error,
+            });
+          }
+  
+          if (results) {
+            res.send({
+              status: 200,
+              message: `User retrieved`,
+              data: results,
+            });
+          }
+        });
+        pool.releaseConnection(conn);
+      });
+    }
+
+
 };
 
 module.exports = userController;

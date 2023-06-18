@@ -18,4 +18,7 @@ router.put('/user/:userId', userController.updateUser);
 //UC204 Delete User
 router.delete('/user/:userId', userController.deleteUser);
 
+//UC205 Get User By Id
+router.get('/user/:userId', userController.getUserById);
+
 module.exports = router;
