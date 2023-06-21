@@ -170,9 +170,9 @@ const userController = {
   },
 
     //UC-205 Get User by Id
-    getUserById: (req, res, next) => {
-      const userId = req.params.userId;
-      const sqlStatement = `SELECT * FROM user WHERE Id = ?`;
+    getUserByEmail: (req, res, next) => {
+      const emailAdress = req.params.emailAdress;
+      const sqlStatement = `SELECT * FROM user WHERE EmailAdress = ?`;
   
       pool.getConnection((err, conn) => {
         if (err) {
@@ -182,7 +182,7 @@ const userController = {
           });
         }
   
-        conn.query(sqlStatement, [userId], (error, results) => {
+        conn.query(sqlStatement, [emailAdress], (error, results) => {
           if (error) {
             next({
               status: 409,

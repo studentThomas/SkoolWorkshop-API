@@ -19,6 +19,6 @@ router.put('/user/:userId', userController.updateUser);
 router.delete('/user/:userId', userController.deleteUser);
 
 //UC205 Get User By Id
-router.get('/user/:userId', userController.getUserById);
+router.get('/user/:emailAdress', userController.getUserByEmail);
 
 module.exports = router;
